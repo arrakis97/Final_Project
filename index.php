@@ -1,6 +1,9 @@
 <?php
 /**
  * Controller
+ *
+ * Database-driven Webtechnology Final Project
+ * Heine Jan Lindemulder
  */
 
 /* Require composer autoloader */

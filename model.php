@@ -1,6 +1,9 @@
 <?php
 /**
  * Model
+ *
+ * Database-driven Webtechnology Final Project
+ * Heine Jan Lindemulder
  */
 
 /* Enable error reporting */
