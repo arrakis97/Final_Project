@@ -19,21 +19,13 @@ $navigation_array = Array (
         'name' => 'Home',
         'url' => '/Final_Project/'
     ),
-    2 => Array (
-        'name' => 'Overview',
-        'url' => '/Final_Project/overview/'
-    ),
-    3 => Array (
-        'name' => 'Add series',
-        'url' => '/Final_Project/add/'
+    5 => Array (
+        'name' => 'Registration',
+        'url' => '/Final_Project/register/'
     ),
     4 => Array (
         'name' => 'My Account',
         'url' => '/Final_Project/myaccount/'
-    ),
-    5 => Array (
-        'name' => 'Registration',
-        'url' => '/Final_Project/register/'
     )
 );
 
@@ -49,8 +41,8 @@ if (new_route('/Final_Project/', 'get')) {
     $navigation = get_navigation($navigation_array, 1);
 
     /* Page content */
-    $page_subtitle = 'The online platform to list your favorite series';
-    $page_content = 'On Series Overview you can list your favorite series. You can see the favorite series of all Series Overview users. By sharing your favorite series, you can get inspired by others and explore new series.';
+    $page_subtitle = 'The online platform to find a room';
+    $page_content = 'Kamernet 2.0';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -60,3 +52,5 @@ if (new_route('/Final_Project/', 'get')) {
 
     include use_template('main');
 }
+
+
