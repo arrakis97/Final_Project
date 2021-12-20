@@ -265,3 +265,17 @@ function register_user($pdo, $form_data) {
         'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['firstname'])
     ];
 }
+
+/**
+ * Check if a user is logged in
+ * @return bool
+ */
+function check_login () {
+    session_start();
+    if (isset($_SESSION['user_id'])) {
+        return True;
+    }
+    else {
+        return False;
+    }
+}

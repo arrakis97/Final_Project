@@ -23,7 +23,7 @@ $navigation_array = Array (
         'name' => 'Registration',
         'url' => '/DDWT21/Final_Project/register/'
     ),
-    4 => Array (
+    3 => Array (
         'name' => 'My Account',
         'url' => '/DDWT21/Final_Project/myaccount/'
     )
@@ -94,7 +94,33 @@ elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
 
 /* My Account GET */
 elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
-    p_print("My account");
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/week2/login/');
+    }
+
+    /* Page info */
+    $page_title = 'My Account';
+    $breadcrumbs = get_breadcrumbs([
+        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'My Account' => na('/DDWT21/Final_Project/myaccount/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 3);
+
+    /* Page content */
+    $page_subtitle = 'Your account';
+    $page_content = 'Here you can see information about your account';
+    $user = display_user($db, $_SESSION['user_id'])['first_name'];
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
+    include use_template('account');
 }
 
 else {

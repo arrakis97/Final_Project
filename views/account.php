@@ -46,20 +46,8 @@
                     Welcome, <?= $user ?>
                 </div>
                 <div class="card-body">
-                    <p>You're logged in to Series Overview.</p>
-                    <a href="/DDWT21/week2/logout/" class="btn btn-primary">Logout</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    Add series
-                </div>
-                <div class="card-body">
-                    <p>Add your contribution to Series Overview.</p>
-                    <a href="/DDWT21/week2/add/" class="btn btn-primary">Add a series</a>
+                    <p>You're logged in to Kamernet 2.0.</p>
+                    <a href="/DDWT21/Final_Project/logout/" class="btn btn-primary">Logout</a>
                 </div>
             </div>
         </div>
