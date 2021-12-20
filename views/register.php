@@ -103,10 +103,10 @@
                         <option selected disabled value="">
                             Pick a language
                         </option>
-                        <option value="dutch">
+                        <option value="Nederlands">
                             Nederlands
                         </option>
-                        <option value="english">
+                        <option value="English">
                             English
                         </option>
                     </select>
