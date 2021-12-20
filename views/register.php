@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/css/bootstrap.min.css" integrity="sha512-T584yQ/tdRR5QwOpfvDfVQUidzfgc2339Lc8uBDtcp/wYu80d7jwBgAxbyMh0a9YM9F8N3tdErpFI8iaGx6x5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Own CSS -->
-    <link rel="stylesheet" href="/DDWT21/week2/css/main.css">
+    <link rel="stylesheet" href="/Final_Project/css/main.css">
 
     <title><?= $page_title ?></title>
 </head>
@@ -36,7 +36,7 @@
 
             <div class="pd-15">&nbsp;</div>
 
-            <form action="/DDWT21/week2/register/" method="POST">
+            <form action="/Final_Project/register/" method="POST">
                 <div class="form-group">
                     <label for="inputUsername">Username</label>
                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter a username" name="username" required>
