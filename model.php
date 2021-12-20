@@ -159,3 +159,109 @@ function p_print($input){
     print_r($input);
     echo '</pre>';
 }
+
+/**
+ * Find the first and last name of a user
+ * @param PDO $pdo Database
+ * @param int $user_id User ID for which you want to find the name
+ * @return array Contains first and last name of a user
+ */
+function display_user($pdo, $user_id) {
+    $stmt = $pdo->prepare('SELECT first_name, last_name FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $user_name = $stmt->fetch();
+    return $user_name;
+}
+
+/**
+ * Register a user in the database
+ * @param PDO $pdo Database
+ * @param Array $form_data Data filled in by a user
+ * @return array|string[]
+ */
+function register_user($pdo, $form_data) {
+    /* Check if all fields are set */
+    if (
+        empty($form_data['username']) or
+        empty($form_data['password']) or
+        empty($form_data['firstname']) or
+        empty($form_data['lastname']) or
+        empty($form_data['role']) or
+        empty($form_data['birthdate']) or
+        empty($form_data['phonenumber']) or
+        empty($form_data['email']) or
+        empty($form_data['language']) or
+        empty($form_data['occupation'])
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'You should fill in everything'
+        ];
+    }
+
+    /* Check if user already exists */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$form_data['username']]);
+        $user_exists = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
+    /* Check if e-mail is already in use */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$form_data['email']]);
+        $email_exists = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
+    /* Return error message for existing username */
+    if (!empty($user_exists)) {
+        return [
+            'type' => 'danger',
+            'message' => 'The username you entered exists already!'
+        ];
+    }
+
+    /* Return error message for email already in use */
+    if (!empty($email_exists)) {
+        return [
+            'type' => 'danger',
+            'mesage' => 'There exists an account already with this e-mail.'
+        ];
+    }
+
+    /* Hash password */
+    $password = password_hash($form_data['password'], PASSWORD_DEFAULT);
+
+    /* Save user to the database */
+    try {
+        $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, email, language, occupation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$form_data['username'], $password, $form_data['firstname'], $form_data['lastname'], $form_data['role'], $form_data['birthdate'], $form_data['phonenumber'], $form_data['email'], $form_data['language'], $form_data['occupation']]);
+        $user_id = $pdo->lastInsertId();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
+    /* Login user */
+    session_start();
+    $_SESSION['user_id'] = $user_id;
+    return [
+        'type' => 'success',
+        'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['firstname'])
+    ];
+}

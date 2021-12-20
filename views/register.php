@@ -36,22 +36,86 @@
 
             <div class="pd-15">&nbsp;</div>
 
-            <form action="/Final_Project/register/" method="POST">
+            <form action="/DDWT21/Final_Project/register/" method="POST">
                 <div class="form-group">
-                    <label for="inputUsername">Username</label>
+                    <label for="inputUsername">
+                        Username
+                    </label>
                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter a username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword">Password</label>
+                    <label for="inputPassword">
+                        Password
+                    </label>
                     <input type="password" class="form-control" id="inputPassword" placeholder="Enter a password" name="password" required>
                 </div>
                 <div class="form-group">
-                    <label for="inputUsername">First name</label>
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter your first name" name="firstname" required>
+                    <label for="inputFirstName">
+                        First name
+                    </label>
+                    <input type="text" class="form-control" id="inputFirstName" placeholder="Enter your first name" name="firstname" required>
                 </div>
                 <div class="form-group">
-                    <label for="inputUsername">Last name</label>
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter your last name" name="lastname" required>
+                    <label for="inputLastName">
+                        Last name
+                    </label>
+                    <input type="text" class="form-control" id="inputLastName" placeholder="Enter your last name" name="lastname" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">
+                        Owner or tenant
+                    </label>
+                    <select name="role" class="form-select" id="role" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="owner">
+                            Owner
+                        </option>
+                        <option value="tenant">
+                            Tenant
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputDate">
+                        Date of birth
+                    </label>
+                    <input type="text" class="form-control" id="inputDate" placeholder="yyyy-mm-dd" name="birthdate" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputPhone">
+                        Phone number
+                    </label>
+                    <input type="text" class="form-control" id="inputPhone" placeholder="0612345678" name="phonenumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail">
+                        E-mail
+                    </label>
+                    <input type="text" class="form-control" id="inputEmail" placeholder="example@example.com" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="language">
+                        Select your language
+                    </label>
+                    <select name="language" class="form-select" id="language" required>
+                        <option selected disabled value="">
+                            Pick a language
+                        </option>
+                        <option value="dutch">
+                            Nederlands
+                        </option>
+                        <option value="english">
+                            English
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="occupation">
+                        State your occupation (eg. studies/profession)
+                    </label>
+                    <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Register now</button>
             </form>

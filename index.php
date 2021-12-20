@@ -76,6 +76,27 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
     include use_template('register');
 }
 
+/* Register POST */
+elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
+    /* Register user */
+    $feedback = register_user($db, $_POST);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'danger') {
+        /* Redirect to register form */
+        redirect(sprintf('/DDWT21/Final_Project/register/?error_msg=%s', json_encode($feedback)));
+    }
+    else {
+        /* Redirect to My Account page */
+        redirect(sprintf('/DDWT21/Final_Project/myaccount/?error_msg=%s', json_encode($feedback)));
+    }
+}
+
+/* My Account GET */
+elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
+    p_print("My account");
+}
+
 else {
     http_response_code(404);
     echo '404 Not Found';
