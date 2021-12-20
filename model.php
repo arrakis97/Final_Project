@@ -173,6 +173,13 @@ function display_user($pdo, $user_id) {
     return $user_name;
 }
 
+function display_role($pdo, $user_id) {
+    $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $user_role = $stmt->fetch();
+    return $user_role['role'];
+}
+
 /**
  * Register a user in the database
  * @param PDO $pdo Database
@@ -277,5 +284,61 @@ function check_login () {
     }
     else {
         return False;
+    }
+}
+
+/**
+ * Login a user
+ * @param PDO $pdo Database
+ * @param Array $form_data Data filled in by the user
+ * @return array|string[]
+ */
+function login_user ($pdo, $form_data) {
+    /* Check if all fields are set */
+    if (
+        empty($form_data['username']) or
+        empty($form_data['password'])
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'You should enter a username and password.'
+        ];
+    }
+
+    /* Check if user exists */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$form_data['username']]);
+        $user_info = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error %s', $e->getMessage())
+        ];
+    }
+
+    /* Return error message for wrong username */
+    if (empty($user_info)) {
+        return [
+            'type' => 'danger',
+            'message' => 'The username you entered does not exist.'
+        ];
+    }
+
+    /* Check password */
+    if (!password_verify($form_data['password'], $user_info['password'])) {
+        return [
+            'type' => 'danger',
+            'message' => 'The password you entered is incorrect!'
+        ];
+    }
+    else {
+        session_start();
+        $_SESSION['user_id'] = $user_info['id'];
+        return [
+            'type' => 'success',
+            'message' => sprintf('%s, you were logged in successfully!', display_user($pdo, $_SESSION['user_id'])['firstname'])
+        ];
     }
 }

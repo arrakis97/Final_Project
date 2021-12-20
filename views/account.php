@@ -52,6 +52,17 @@
             </div>
         </div>
 
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Role
+                </div>
+                <div class="card-body">
+                    <p>Your role is: <?= $role ?></p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

@@ -26,6 +26,10 @@ $navigation_array = Array (
     3 => Array (
         'name' => 'My Account',
         'url' => '/DDWT21/Final_Project/myaccount/'
+    ),
+    4 => Array (
+        'name' => 'Log-in',
+        'url' => '/DDWT21/Final_Project/login/'
     )
 );
 
@@ -113,6 +117,7 @@ elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
     $page_subtitle = 'Your account';
     $page_content = 'Here you can see information about your account';
     $user = display_user($db, $_SESSION['user_id'])['first_name'];
+    $role = display_role($db, $_SESSION['user_id']);
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -121,6 +126,30 @@ elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
 
     /* Choose template */
     include use_template('account');
+}
+
+/* Login GET */
+elseif (new_route('/DDWT21/Final_Project/login', 'get')) {
+    /* Page info */
+    $page_title = 'Login';
+    $breadcrumbs = get_breadcrumbs([
+        'DDWT21' => na('/DDWT21/', False),
+        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'Login' => na('/DDWT21/Final_Project/login', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 4);
+
+    /* Page content */
+    $page_subtitle = 'Login to you Series Overview account';
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
+    include use_template('login');
 }
 
 else {
