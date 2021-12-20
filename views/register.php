@@ -69,10 +69,10 @@
                         <option selected disabled value="">
                             Pick an option
                         </option>
-                        <option value="owner">
+                        <option value="Owner">
                             Owner
                         </option>
-                        <option value="tenant">
+                        <option value="Tenant">
                             Tenant
                         </option>
                     </select>
