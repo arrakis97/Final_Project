@@ -269,7 +269,7 @@ function register_user($pdo, $form_data) {
     $_SESSION['user_id'] = $user_id;
     return [
         'type' => 'success',
-        'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['firstname'])
+        'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['first_name'])
     ];
 }
 

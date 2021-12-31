@@ -25,11 +25,15 @@ $navigation_array = Array (
     ),
     3 => Array (
         'name' => 'My Account',
-        'url' => '/DDWT21/Final_Project/myaccount/'
+        'url' => '/DDWT21/Final_Project/my_account/'
     ),
     4 => Array (
         'name' => 'Log-in',
         'url' => '/DDWT21/Final_Project/login/'
+    ),
+    5 => Array (
+        'name' => 'Add room',
+        'url' => '/DDWT21/Final_Project/add_room/'
     )
 );
 
@@ -46,7 +50,7 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
 
     /* Page content */
     $page_subtitle = 'The online platform to find a room';
-    $page_content = 'Kamernet 2.0 Hello';
+    $page_content = 'Kamernet 2.0';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -92,12 +96,12 @@ elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
     }
     else {
         /* Redirect to My Account page */
-        redirect(sprintf('/DDWT21/Final_Project/myaccount/?error_msg=%s', json_encode($feedback)));
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 }
 
 /* My Account GET */
-elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
+elseif (new_route('/DDWT21/Final_Project/my_account', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -108,7 +112,7 @@ elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
     $breadcrumbs = get_breadcrumbs([
         'Final Project' => na('/DDWT21/Final_Project/', False),
         'Home' => na('/DDWT21/Final_Project/', False),
-        'My Account' => na('/DDWT21/Final_Project/myaccount/', True)
+        'My Account' => na('/DDWT21/Final_Project/my_account/', True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 3);
@@ -164,7 +168,7 @@ elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
     }
     else {
         /* Redirect to My Account page */
-        redirect(sprintf('/DDWT21/Final_Project/myaccount/?error_msg=%s', json_encode($feedback)));
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 }
 
@@ -172,6 +176,30 @@ elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
 elseif(new_route('/DDWT21/Final_Project/logout', 'get')) {
     $feedback = logout_user();
     redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
+}
+
+/* Add room GET */
+elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
+    /* Page info */
+    $page_title = "Add room";
+    $breadcrumbs = get_breadcrumbs([
+        'DDWT21' => na('/DDWT21/', False),
+        'Final Project' => na('/DDWT21/Final_Project', False),
+        'Add room' => na('/DDWT21/Final_Project/add_room', False)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 5);
+
+    /* Page content */
+    $page_subtitle = 'Here you can add a room';
+    $page_content = display_role($db, $_SESSION['user_id']);
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    include use_template('main');
 }
 
 else {

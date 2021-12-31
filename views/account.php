@@ -63,6 +63,20 @@
             </div>
         </div>
 
+        <?php if (display_role($db, $_SESSION['user_id']) == 'Owner') { ?>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Add a room
+                    </div>
+                    <div class="card-body">
+                        <p>Click here to add a room</p>
+                        <a href="/DDWT21/Final_Project/add_room/" class="btn btn-primary">Add room</a>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+
     </div>
 </div>
 
