@@ -244,7 +244,7 @@ function register_user($pdo, $form_data) {
     if (!empty($email_exists)) {
         return [
             'type' => 'danger',
-            'mesage' => 'There exists an account already with this e-mail.'
+            'message' => 'There exists an account already with this e-mail.'
         ];
     }
 
