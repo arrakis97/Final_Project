@@ -4,7 +4,7 @@
  *
  * Database-driven Webtechnology Final Project
  * Heine Jan Lindemulder
- * Based on code from the assignments
+ * Based on code from the assignments by Stijn Eikelboom
  */
 
 /* Enable error reporting */
@@ -338,7 +338,29 @@ function login_user ($pdo, $form_data) {
         $_SESSION['user_id'] = $user_info['id'];
         return [
             'type' => 'success',
-            'message' => sprintf('%s, you were logged in successfully!', display_user($pdo, $_SESSION['user_id'])['firstname'])
+            'message' => sprintf('%s, you were logged in successfully!', display_user($pdo, $_SESSION['user_id'])['first_name'])
+        ];
+    }
+}
+
+/**
+ * Logout a user
+ * @return string[]
+ */
+function logout_user () {
+    session_start();
+    unset($_SESSION);
+    session_destroy();
+    if (empty($_SESSION['user_id'])) {
+        return [
+            'type' => 'success',
+            'message' => 'You have been logged out.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong.'
         ];
     }
 }

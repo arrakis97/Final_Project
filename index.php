@@ -4,7 +4,7 @@
  *
  * Database-driven Webtechnology Final Project
  * Heine Jan Lindemulder
- * Based on code from the assignments
+ * Based on code from the assignments by Stijn Eikelboom
  */
 
 /* Include model.php */
@@ -100,7 +100,7 @@ elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
 elseif (new_route('/DDWT21/Final_Project/myaccount', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
-        redirect('/DDWT21/week2/login/');
+        redirect('/DDWT21/Final_Project/login/');
     }
 
     /* Page info */
@@ -150,6 +150,28 @@ elseif (new_route('/DDWT21/Final_Project/login', 'get')) {
 
     /* Choose template */
     include use_template('login');
+}
+
+/* Login POST */
+elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
+    /* Login user */
+    $feedback = login_user($db, $_POST);
+
+    /* Redirect to the correct page with an error or a success message */
+    if ($feedback['type'] == 'danger') {
+        /* Redirect to login screen */
+        redirect(sprintf('/DDWT21/Final_Project/login/?error_msg=%s', json_encode($feedback)));
+    }
+    else {
+        /* Redirect to My Account page */
+        redirect(sprintf('/DDWT21/Final_Project/myaccount/?error_msg=%s', json_encode($feedback)));
+    }
+}
+
+/* Logout GET */
+elseif(new_route('/DDWT21/Final_Project/logout', 'get')) {
+    $feedback = logout_user();
+    redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
 }
 
 else {
