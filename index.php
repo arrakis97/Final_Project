@@ -163,7 +163,7 @@ elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
 
     /* Redirect to the correct page with an error or a success message */
     if ($feedback['type'] == 'danger') {
-        /* Redirect to login screen */
+        /* Redirect to log in screen */
         redirect(sprintf('/DDWT21/Final_Project/login/?error_msg=%s', json_encode($feedback)));
     }
     else {
@@ -180,6 +180,18 @@ elseif(new_route('/DDWT21/Final_Project/logout', 'get')) {
 
 /* Add room GET */
 elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login');
+    }
+    /* Check if user is owner */
+    $feedback = check_owner($db);
+    if (!$feedback) {
+        /* Redirect to my account */
+        $feedback = ['type' => 'danger', 'message' => 'You are not an owner'];
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
+
     /* Page info */
     $page_title = "Add room";
     $breadcrumbs = get_breadcrumbs([

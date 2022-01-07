@@ -287,6 +287,15 @@ function check_login () {
     }
 }
 
+function check_owner($pdo) {
+    if (display_role($pdo, $_SESSION['user_id']) == 'Owner') {
+        return True;
+    }
+    else {
+        return False;
+    }
+}
+
 /**
  * Login a user
  * @param PDO $pdo Database
