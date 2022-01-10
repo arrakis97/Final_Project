@@ -373,3 +373,7 @@ function logout_user () {
         ];
     }
 }
+
+function add_room ($pdo, $room_info) {
+
+}

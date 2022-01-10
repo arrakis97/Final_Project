@@ -18,7 +18,7 @@
 <?= $navigation ?>
 
 <!-- Content -->
-<div class="containter">
+<div class="container">
     <!-- Breadcrumbs -->
     <div class="pd-15"> </div>
     <?= $breadcrumbs ?>
@@ -36,8 +36,142 @@
             <div class="pd-15"> </div>
 
             <form action="/DDWT21/Final_Project/add_room/" method="POST">
-                <div class="form-group">
-                    <label for=""
+                <div class="form-group row">
+                    <label for="inputCity">
+                        City
+                    </label>
+                    <input type="text" class="form-control" id="inputCity" placeholder="Enter the city" name="city" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputStreet">
+                        Street name
+                    </label>
+                    <input type="text" class="form-control" id="inputStreet" placeholder="Enter the street name" name="street_name" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputNumber">
+                        House number
+                    </label>
+                    <input type="number" class="form-control" id="inputNumber" placeholder="Enter the house number" name="house_number" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputAddition">
+                        Addition
+                    </label>
+                    <input type="text" class="form-control" id="inputAddition" placeholder="Enter the addition (if required)" name="addition">
+                </div>
+                <div class="form-group row">
+                    <label for="inputType">
+                        Type of room
+                    </label>
+                    <select class="form-select" id="inputType" name="type" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="Room in student house">
+                            Room in student house
+                        </option>
+                        <option value="Room in owner's house">
+                            Room in owner's house
+                        </option>
+                        <option value="Apartment">
+                            Apartment
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label for="inputSize">
+                        Size of the room
+                    </label>
+                    <input type="number" class="form-control" id="inputSize" placeholder="Enter the size of the room in m^2" name="size" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPrice">
+                        Price of the room
+                    </label>
+                    <input type="number" class="form-control" id="inputPrice" placeholder="Enter the monthly price of the room in euros" name="price" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputAllowance">
+                        Is rent allowance available?
+                    </label>
+                    <select class="form-select" id="inputAllowance" name="rent_allowance" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="True">
+                            Rent allowance is available
+                        </option>
+                        <option value="False">
+                            Rent allowance is not available
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label for="inputUtilities">
+                        Is the price including utilities?
+                    </label>
+                    <select class="form-select" id="inputUtilities" name="including_utilities" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="True">
+                            Price is including utilities
+                        </option>
+                        <option value="False">
+                            Price is not including utilities
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label for="inputKitchen">
+                        Is the kitchen shared?
+                    </label>
+                    <select class="form-select" id="inputKitchen" name="shared_kitchen" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="True">
+                            The kitchen is shared
+                        </option>
+                        <option value="False">
+                            The kitchen is not shared
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label for="inputBathroom">
+                        Is the bathroom shared?
+                    </label>
+                    <select class="form-select" id="inputBathroom" name="shared_bathroom" required>
+                        <option selected disabled value="">
+                            Pick an option
+                        </option>
+                        <option value="True">
+                            The bathroom is shared
+                        </option>
+                        <option value="False">
+                            The bathroom is not shared
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label for="inputRoommates">
+                        Amount of roommates
+                    </label>
+                    <input type="number" class="form-control" id="inputRoommates" placeholder="Enter the amount of roommates" name="nr_roommates" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputInfo">
+                        General information
+                    </label>
+                    <textarea class="form-control" id="inputInfo" rows="3" placeholder="Here you can share general information about the room" name="general_info" required></textarea>
+                </div>
+                <div class="form-group row">
+                    <input type="hidden" id="owner" name="owner" value="<?= $_SESSION['user_id'] ?>">
+                    <button type="submit" class="btn btn-primary">
+                        Add your room
+                    </button>
                 </div>
             </form>
 

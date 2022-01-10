@@ -211,7 +211,12 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
         $error_msg = get_error($_GET['error_msg']);
     }
 
-    include use_template('main');
+    include use_template('add_room');
+}
+
+/* Add room POST */
+elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {
+
 }
 
 else {
