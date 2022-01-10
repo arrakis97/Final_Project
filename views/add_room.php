@@ -20,7 +20,7 @@
 <!-- Content -->
 <div class="container">
     <!-- Breadcrumbs -->
-    <div class="pd-15"> </div>
+    <div class="pd-15">&nbsp;</div>
     <?= $breadcrumbs ?>
 
     <div class="row">
@@ -160,6 +160,12 @@
                         Amount of roommates
                     </label>
                     <input type="number" class="form-control" id="inputRoommates" placeholder="Enter the amount of roommates" name="nr_roommates" required>
+                </div>
+                <div class="form-group row">
+                    <label for="inputRooms">
+                        Amount of rooms
+                    </label>
+                    <input type="number" class="form-control" id="inputRooms" placeholder="Enter the amount of rooms" name="nr_rooms" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputInfo">

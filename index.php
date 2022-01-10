@@ -215,8 +215,25 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
 }
 
 /* Add room POST */
-elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {
+elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {;
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
 
+    /* Add room */
+    $feedback = add_room($db, $_POST);
+    $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'danger') {
+        redirect(sprintf('/DDWT21/Final_Project/add_room/?error_msg=%s', json_encode($feedback)));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/my_account/', json_encode($feedback)));
+    }
+
+    include use_template('add_room');
 }
 
 else {
