@@ -230,7 +230,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {;
         redirect(sprintf('/DDWT21/Final_Project/add_room/?error_msg=%s', json_encode($feedback)));
     }
     else {
-        redirect(sprintf('/DDWT21/Final_Project/my_account/', json_encode($feedback)));
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 
     include use_template('add_room');

@@ -99,10 +99,10 @@
                         <option selected disabled value="">
                             Pick an option
                         </option>
-                        <option value="True">
+                        <option value="1">
                             Rent allowance is available
                         </option>
-                        <option value="False">
+                        <option value="0">
                             Rent allowance is not available
                         </option>
                     </select>
@@ -115,10 +115,10 @@
                         <option selected disabled value="">
                             Pick an option
                         </option>
-                        <option value="True">
+                        <option value="1">
                             Price is including utilities
                         </option>
-                        <option value="False">
+                        <option value="0">
                             Price is not including utilities
                         </option>
                     </select>
@@ -131,10 +131,10 @@
                         <option selected disabled value="">
                             Pick an option
                         </option>
-                        <option value="True">
+                        <option value="1">
                             The kitchen is shared
                         </option>
-                        <option value="False">
+                        <option value="0">
                             The kitchen is not shared
                         </option>
                     </select>
@@ -147,10 +147,10 @@
                         <option selected disabled value="">
                             Pick an option
                         </option>
-                        <option value="True">
+                        <option value="1">
                             The bathroom is shared
                         </option>
-                        <option value="False">
+                        <option value="0">
                             The bathroom is not shared
                         </option>
                     </select>

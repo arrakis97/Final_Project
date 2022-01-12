@@ -375,59 +375,58 @@ function logout_user () {
 }
 
 function add_room ($pdo, $room_info) {
-    print_r($room_info);
     /* Check if all fields are set */
     if (
         empty($room_info['city']) or
         empty($room_info['street_name']) or
-        empty($room_info['house_number']) or
+        !isset($room_info['house_number']) or
         empty($room_info['type']) or
-        empty($room_info['size']) or
-        empty($room_info['price']) or
-        empty($room_info['rent_allowance']) or
-        empty($room_info['including_utilities']) or
-        empty($room_info['shared_kitchen']) or
-        empty($room_info['shared_bathroom']) or
-        empty($room_info['nr_roommates']) or
-        empty($room_info['nr_rooms']) or
+        !isset($room_info['size']) or
+        !isset($room_info['price']) or
+        !isset($room_info['rent_allowance']) or
+        !isset($room_info['including_utilities']) or
+        !isset($room_info['shared_kitchen']) or
+        !isset($room_info['shared_bathroom']) or
+        !isset($room_info['nr_roommates']) or
+        !isset($room_info['nr_rooms']) or
         empty($room_info['general_info']) or
         empty($room_info['owner'])
     ) {
         return [
             'type' => 'danger',
-            'message' => sprintf('There was an error. Not all fields were filled in. Your id is: %s', $room_info)
+            'message' => 'There was an error. Not all fields were filled in.'
         ];
     }
 
     /* Check data types */
-    if (!is_numeric($room_info['house_number'])) {
+    if (!is_numeric($room_info['house_number']) or $room_info['house_number'] <= 0) {
         return [
             'type' => 'danger',
-            'message' => 'There was an error. You should enter a number in the house number field.'
+            'message' => 'There was an error. You should enter a number larger than zero in the house number field.'
         ];
     }
-    if (!is_numeric($room_info['size'])) {
+    if (!is_numeric($room_info['size']) or $room_info['size'] <= 0) {
         return [
             'type' => 'danger',
-            'message' => 'There was an error. You should enter a number in the size field.'
+            'message' => 'There was an error. You should enter a number larger than zero in the size field.'
         ];
     }
-    if (!is_numeric($room_info['price'])) {
+    if (!is_numeric($room_info['price']) or $room_info['price'] <= 0) {
         return [
             'type' => 'danger',
-            'message' => 'There was an error. You should enter a number in the price field.'
+            'message' => 'There was an error. You should enter a number larger than zero in the price field.'
         ];
     }
-    if (!is_numeric($room_info['nr_roommates'])) {
+    if (!is_numeric($room_info['nr_roommates']) or $room_info['nr_roommates'] < 0) {
         return [
             'type' => 'danger',
-            'message' => 'There was an error. You should enter a number in the number of roommates field.'
+            'message' => 'There was an error. You should enter a zero or larger in the number of roommates field.'
         ];
     }
-    if (!is_numeric($room_info['nr_rooms'])) {
+    if (!is_numeric($room_info['nr_rooms']) or $room_info['nr_rooms'] <= 0) {
         return [
             'type' => 'danger',
-            'message' => 'There was an error. You should enter a number in the number of rooms field.'
+            'message' => 'There was an error. You should enter a number larger than zero in the number of rooms field.'
         ];
     }
 
@@ -457,8 +456,8 @@ function add_room ($pdo, $room_info) {
 
     /* Save room to database */
     try {
-        $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, 
-                   including_utilities, shared_kitchen, shared_bathroom, nr_roommates, nr_rooms, general_info)');
+        $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, including_utilities, 
+                   shared_kitchen, shared_bathroom, nr_roommates, nr_rooms, general_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([
             $room_info['owner'],
             $room_info['city'],
