@@ -497,3 +497,74 @@ function add_room ($pdo, $room_info) {
         ];
     }
 }
+
+function get_rooms($pdo) {
+    $stmt = $pdo->prepare('SELECT * FROM rooms');
+    $stmt->execute();
+    $rooms = $stmt->fetchAll();
+    $rooms_exp = Array();
+
+    foreach ($rooms as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
+    return $rooms_exp;
+}
+
+function get_rooms_table($rooms, $pdo) {
+    $table_exp = '
+    <table class="table table-hover">
+    <thead
+    <tr>
+        <th scope="col">City</th>
+        <th scope="col">Address</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>';
+    foreach($rooms as $key => $value){
+//        if (empty($value['addition'])) {
+//            $addition = "";
+//        }
+//        else {
+//            $addition = $value['addition'];
+//        }
+        $table_exp .= '
+        <tr>
+            <th scope="row">'.$value['city'].'</th>
+            <th scope="row">'.$value['street_name'].' '.$value['house_number'].' '.$value['addition'].'</th>
+            <td><a href="/DDWT21/Final_Project/rooms/?room_id='.$value['id'].'" role="button" class="btn btn-primary">More info</a></td>
+        </tr>
+        ';
+    }
+    $table_exp .= '
+    </tbody>
+    </table>
+    ';
+    return $table_exp;
+}
+
+function get_room_info($pdo, $room_id) {
+    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE id = ?');
+    $stmt->execute([$room_id]);
+    $room_info = $stmt->fetch();
+    $room_info_exp = Array();
+
+    foreach ($room_info as $key => $value) {
+        $room_info_exp[$key] = htmlspecialchars($value);
+    }
+    return $room_info_exp;
+}
+
+function room_address($pdo, $room_id) {
+    $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE id = ?');
+    $stmt->execute([$room_id]);
+    $room_address = $stmt->fetch();
+    $room_address_exp = Array();
+
+    foreach ($room_address as $key => $value) {
+        $room_address_exp[$key] = htmlspecialchars($value);
+    }
+    return $room_address_exp;
+}

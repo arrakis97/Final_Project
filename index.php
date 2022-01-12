@@ -260,8 +260,27 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
     /* Page content */
     $page_subtitle = 'The overview of all available rooms';
     $page_content = 'Here you can find all rooms available on Kamernet 2.0';
+    $left_content = get_rooms_table(get_rooms($db), $db);
 
     include use_template('main');
+}
+
+/* Single room GET */
+elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
+    /* Get room from database */
+    $room_id = $_GET['room_id'];
+    $room_info = get_room_info($db, $room_id);
+
+    /* Page info */
+    $page_title = 'View this one room';
+    $breadcrumbs = get_breadcrumbs([
+        'DDWT21' => na('/DDWT21/', False),
+        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
+        ''
+    ]);
+
+    include use_template('single_room');
 }
 
 else {
