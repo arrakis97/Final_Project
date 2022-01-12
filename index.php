@@ -34,6 +34,10 @@ $navigation_array = Array (
     5 => Array (
         'name' => 'Add room',
         'url' => '/DDWT21/Final_Project/add_room/'
+    ),
+    6 => Array (
+        'name' => 'View rooms',
+        'url' => '/DDWT21/Final_Project/view_rooms/'
     )
 );
 
@@ -182,7 +186,7 @@ elseif(new_route('/DDWT21/Final_Project/logout', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
-        redirect('/DDWT21/Final_Project/login');
+        redirect('/DDWT21/Final_Project/login/');
     }
     /* Check if user is owner */
     $feedback = check_owner($db);
@@ -215,7 +219,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
 }
 
 /* Add room POST */
-elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {;
+elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -234,6 +238,30 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {;
     }
 
     include use_template('add_room');
+}
+
+/* View rooms GET */
+elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Page info */
+    $page_title = 'View rooms';
+    $breadcrumbs = get_breadcrumbs([
+        'DDWT21' => na('/DDWT21/', False),
+        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 6);
+
+    /* Page content */
+    $page_subtitle = 'The overview of all available rooms';
+    $page_content = 'Here you can find all rooms available on Kamernet 2.0';
+
+    include use_template('main');
 }
 
 else {
