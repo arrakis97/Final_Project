@@ -67,9 +67,18 @@
 
         <!-- Right column -->
         <div class="col-md-4">
-
-            <?php include $right_column ?>
-
+            <div class="card">
+                <div class="card-header">
+                    Monthly price
+                </div>
+                <div class="card-body">
+                    <p class="count">
+                        The monthly price for this room is
+                    </p>
+                    <h2>€<?= $room_info['price'] ?></h2>
+                    <p><?php if ($room_info['including_utilities'] == 1) {echo "This price is including utilities";} else {echo "This price is not including utilities";} ?></p>
+                </div>
+            </div>
         </div>
 
     </div>

@@ -272,13 +272,25 @@ elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
     $room_info = get_room_info($db, $room_id);
 
     /* Page info */
-    $page_title = 'View this one room';
+    $page_title = $room_info['street_name'] . " " . $room_info['house_number'] . " " . $room_info['addition'] . ", " . $room_info['city'];
     $breadcrumbs = get_breadcrumbs([
         'DDWT21' => na('/DDWT21/', False),
         'Final Project' => na('/DDWT21/Final_Project/', False),
         'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
-        ''
+        $room_info['street_name'] . " " . $room_info['house_number'] . " " . $room_info['addition'] . ", " . $room_info['city'] => na('/DDWT21/Final_Project/rooms/?room_id='.$room_id, True)
     ]);
+
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = 'View information about this specific room';
+    $page_content = $room_info['general_info'];
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
 
     include use_template('single_room');
 }

@@ -523,13 +523,7 @@ function get_rooms_table($rooms, $pdo) {
     </tr>
     </thead>
     <tbody>';
-    foreach($rooms as $key => $value){
-//        if (empty($value['addition'])) {
-//            $addition = "";
-//        }
-//        else {
-//            $addition = $value['addition'];
-//        }
+    foreach($rooms as $value){
         $table_exp .= '
         <tr>
             <th scope="row">'.$value['city'].'</th>
