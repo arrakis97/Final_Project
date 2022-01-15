@@ -36,16 +36,32 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <th scope="row">Creators</th>
-                    <td><?= $creators ?></td>
+                    <th scope="row">Type</th>
+                    <td><?= $room_info['type'] ?></td>
                 </tr>
                 <tr>
-                    <th scope="row">Number of seasons</th>
-                    <td><?= $nbr_seasons ?></td>
+                    <th scope="row">Size</th>
+                    <td><?= $room_info['size'] ?> m<sup>2</sup></td>
                 </tr>
                 <tr>
-                    <th scope="row">Added by user</th>
-                    <td><?= $added_by['firstname'], ' ', $added_by['lastname']?></td>
+                    <th scope="row">Rent allowance</th>
+                    <td><?php if ($room_info['rent_allowance'] == 1) {echo "You can request rent allowance for this room.";} else {echo "You cannot request rent allowance for this room.";} ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Shared kitchen?</th>
+                    <td><?php if ($room_info['shared_kitchen'] == 1) {echo "You have to share the kitchen with others.";} else {echo "You have the kitchen all to yourself.";} ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Shared bathroom?</th>
+                    <td><?php if ($room_info['shared_bathroom'] == 1) {echo "You have to share the bathroom with others.";} else {echo "You have the bathroom all to yourself.";} ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Amount of roommates</th>
+                    <td><?php if ($room_info['nr_roommates'] >= 1) {echo "You will have" . " " . $room_info['nr_roommates'] . ' roommates';} else {echo "You have no roommates.";} ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Amount of rooms</th>
+                    <td><?php if ($room_info['nr_rooms'] == 1) {echo "There is one room.";} else {echo "There are" . " " . $room_info['nr_rooms'] . " rooms.";} ?></td>
                 </tr>
                 </tbody>
             </table>
