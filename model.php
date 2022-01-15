@@ -512,7 +512,7 @@ function get_rooms($pdo) {
     return $rooms_exp;
 }
 
-function get_rooms_table($rooms, $pdo) {
+function get_rooms_table($rooms) {
     $table_exp = '
     <table class="table table-hover">
     <thead
@@ -561,4 +561,18 @@ function room_address($pdo, $room_id) {
         $room_address_exp[$key] = htmlspecialchars($value);
     }
     return $room_address_exp;
+}
+
+function get_rooms_owner($pdo, $owner) {
+    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE owner = ?');
+    $stmt->execute([$owner]);
+    $rooms = $stmt->fetchAll();
+    $rooms_exp = Array();
+
+    foreach ($rooms as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
+    return $rooms_exp;
 }

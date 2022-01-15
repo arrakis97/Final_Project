@@ -260,7 +260,24 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
     /* Page content */
     $page_subtitle = 'The overview of all available rooms';
     $page_content = 'Here you can find all rooms available on Kamernet 2.0';
-    $left_content = get_rooms_table(get_rooms($db), $db);
+    if (check_owner($db)) {
+        $rooms = get_rooms_owner($db, $_SESSION['user_id']);
+        if (empty($rooms)) {
+            $left_content = '<b>You have not added any rooms yet.</b>';
+        }
+        else {
+            $left_content = get_rooms_table($rooms);
+        }
+    }
+    else {
+        $rooms = get_rooms($db);
+        if (empty($rooms)) {
+            $left_content = '<b>There are no available rooms.</b>';
+        }
+        else {
+            $left_content = get_rooms_table($rooms);
+        }
+    }
 
     include use_template('main');
 }
