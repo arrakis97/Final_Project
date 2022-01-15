@@ -197,7 +197,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
     }
 
     /* Page info */
-    $page_title = "Add room";
+    $page_title = 'Add room';
     $breadcrumbs = get_breadcrumbs([
         'DDWT21' => na('/DDWT21/', False),
         'Final Project' => na('/DDWT21/Final_Project', False),
@@ -289,12 +289,12 @@ elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
     $room_info = get_room_info($db, $room_id);
 
     /* Page info */
-    $page_title = $room_info['street_name'] . " " . $room_info['house_number'] . " " . $room_info['addition'] . ", " . $room_info['city'];
+    $page_title = $room_info['street_name'] . ' ' . $room_info['house_number'] . $room_info['addition'] . ', ' . $room_info['city'];
     $breadcrumbs = get_breadcrumbs([
         'DDWT21' => na('/DDWT21/', False),
         'Final Project' => na('/DDWT21/Final_Project/', False),
         'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
-        $room_info['street_name'] . " " . $room_info['house_number'] . " " . $room_info['addition'] . ", " . $room_info['city'] => na('/DDWT21/Final_Project/rooms/?room_id='.$room_id, True)
+        $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/rooms/?room_id='.$room_id, True)
     ]);
 
     /* Check which page is the active page */

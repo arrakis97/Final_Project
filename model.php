@@ -527,7 +527,7 @@ function get_rooms_table($rooms) {
         $table_exp .= '
         <tr>
             <th scope="row">'.$value['city'].'</th>
-            <th scope="row">'.$value['street_name'].' '.$value['house_number'].' '.$value['addition'].'</th>
+            <th scope="row">'.$value['street_name'].' '.$value['house_number'].$value['addition'].'</th>
             <td><a href="/DDWT21/Final_Project/rooms/?room_id='.$value['id'].'" role="button" class="btn btn-primary">More info</a></td>
         </tr>
         ';
