@@ -576,3 +576,122 @@ function get_rooms_owner($pdo, $owner) {
     }
     return $rooms_exp;
 }
+
+function update_room($pdo, $room_info) {
+    /* Check if all fields are set */
+    if (
+        empty($room_info['city']) or
+        empty($room_info['street_name']) or
+        !isset($room_info['house_number']) or
+        empty($room_info['type']) or
+        !isset($room_info['size']) or
+        !isset($room_info['price']) or
+        !isset($room_info['rent_allowance']) or
+        !isset($room_info['including_utilities']) or
+        !isset($room_info['shared_kitchen']) or
+        !isset($room_info['shared_bathroom']) or
+        !isset($room_info['nr_roommates']) or
+        !isset($room_info['nr_rooms']) or
+        empty($room_info['general_info']) or
+        empty($room_info['owner']) or
+        empty($room_info['id'])
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. Not all fields were filled in.'
+        ];
+    }
+
+    /* Check data types */
+    if (!is_numeric($room_info['house_number']) or $room_info['house_number'] <= 0) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. You should enter a number larger than zero in the house number field.'
+        ];
+    }
+    if (!is_numeric($room_info['size']) or $room_info['size'] <= 0) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. You should enter a number larger than zero in the size field.'
+        ];
+    }
+    if (!is_numeric($room_info['price']) or $room_info['price'] <= 0) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. You should enter a number larger than zero in the price field.'
+        ];
+    }
+    if (!is_numeric($room_info['nr_roommates']) or $room_info['nr_roommates'] < 0) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. You should enter a zero or larger in the number of roommates field.'
+        ];
+    }
+    if (!is_numeric($room_info['nr_rooms']) or $room_info['nr_rooms'] <= 0) {
+        return [
+            'type' => 'danger',
+            'message' => 'There was an error. You should enter a number larger than zero in the number of rooms field.'
+        ];
+    }
+
+    /* Get current room address */
+    $current_address = room_address($pdo, $room_info['id']);
+
+    /* Check if room exists already */
+    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
+    $stmt->execute([
+        $room_info['city'],
+        $room_info['street_name'],
+        $room_info['house_number'],
+        $room_info['addition']
+    ]);
+    $rooms = $stmt->fetchAll();
+    if (
+        count($rooms) >= 1 and
+        $room_info['city'] != $current_address['city'] and
+        $room_info['street_name'] != $current_address['street_name'] and
+        $room_info['house_number'] != $current_address['house_number'] and
+        $room_info['addition'] != $current_address['addition']
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'There already exists a room at this address.'
+        ];
+    }
+
+    /* Update room */
+    $stmt = $pdo->prepare('UPDATE rooms SET city = ?, street_name = ?, house_number = ?, addition = ?, type = ?, size = ?, 
+                 price = ?, rent_allowance = ?, including_utilities = ?, shared_kitchen = ?, shared_bathroom = ?, nr_roommates = ?, 
+                 nr_rooms = ?, general_info = ? WHERE id = ? AND owner = ?');
+    $stmt->execute([
+        $room_info['city'],
+        $room_info['street_name'],
+        $room_info['house_number'],
+        $room_info['addition'],
+        $room_info['type'],
+        $room_info['size'],
+        $room_info['price'],
+        $room_info['rent_allowance'],
+        $room_info['including_utilities'],
+        $room_info['shared_kitchen'],
+        $room_info['shared_bathroom'],
+        $room_info['nr_roommates'],
+        $room_info['nr_rooms'],
+        $room_info['general_info'],
+        $room_info['id'],
+        $room_info['owner']
+    ]);
+    $updated = $stmt->rowCount();
+    if ($updated == 1) {
+        return [
+            'type' => 'success',
+            'message' => 'The room was successfully updated.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'The room was not updated.'
+        ];
+    }
+}

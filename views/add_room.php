@@ -35,37 +35,37 @@
 
             <div class="pd-15"> </div>
 
-            <form action="/DDWT21/Final_Project/add_room/" method="POST">
+            <form action="<?= $form_action ?>" method="POST">
                 <div class="form-group row">
                     <label for="inputCity">
                         City
                     </label>
-                    <input type="text" class="form-control" id="inputCity" placeholder="Enter the city" name="city" required>
+                    <input type="text" class="form-control" id="inputCity" placeholder="Enter the city" name="city" value="<?php if (isset($room_info)){echo $room_info['city'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputStreet">
                         Street name
                     </label>
-                    <input type="text" class="form-control" id="inputStreet" placeholder="Enter the street name" name="street_name" required>
+                    <input type="text" class="form-control" id="inputStreet" placeholder="Enter the street name" name="street_name" value="<?php if (isset($room_info)){echo $room_info['street_name'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputNumber">
                         House number
                     </label>
-                    <input type="number" class="form-control" id="inputNumber" placeholder="Enter the house number" name="house_number" required>
+                    <input type="number" class="form-control" id="inputNumber" placeholder="Enter the house number" name="house_number" value="<?php if (isset($room_info)){echo $room_info['house_number'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputAddition">
                         Addition
                     </label>
-                    <input type="text" class="form-control" id="inputAddition" placeholder="Enter the addition (if required)" name="addition">
+                    <input type="text" class="form-control" id="inputAddition" placeholder="Enter the addition (if required)" name="addition" value="<?php if (isset($room_info)){echo $room_info['addition'];} ?>">
                 </div>
                 <div class="form-group row">
                     <label for="inputType">
                         Type of room
                     </label>
                     <select class="form-select" id="inputType" name="type" required>
-                        <option selected disabled value="">
+                        <option selected disabled value="<?php if (isset($room_info)){echo $room_info['type'];} ?>">
                             Pick an option
                         </option>
                         <option value="Room in student house">
@@ -83,13 +83,13 @@
                     <label for="inputSize">
                         Size of the room
                     </label>
-                    <input type="number" class="form-control" id="inputSize" placeholder="Enter the size of the room in m^2" name="size" required>
+                    <input type="number" class="form-control" id="inputSize" placeholder="Enter the size of the room in m^2" name="size" value="<?php if (isset($room_info)){echo $room_info['size'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputPrice">
                         Price of the room
                     </label>
-                    <input type="number" class="form-control" id="inputPrice" placeholder="Enter the monthly price of the room in euros" name="price" required>
+                    <input type="number" class="form-control" id="inputPrice" placeholder="Enter the monthly price of the room in euros" name="price" value="<?php if (isset($room_info)){echo $room_info['price'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputAllowance">
@@ -159,26 +159,31 @@
                     <label for="inputRoommates">
                         Amount of roommates
                     </label>
-                    <input type="number" class="form-control" id="inputRoommates" placeholder="Enter the amount of roommates" name="nr_roommates" required>
+                    <input type="number" class="form-control" id="inputRoommates" placeholder="Enter the amount of roommates" name="nr_roommates" value="<?php if (isset($room_info)){echo $room_info['nr_roommates'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputRooms">
                         Amount of rooms
                     </label>
-                    <input type="number" class="form-control" id="inputRooms" placeholder="Enter the amount of rooms" name="nr_rooms" required>
+                    <input type="number" class="form-control" id="inputRooms" placeholder="Enter the amount of rooms" name="nr_rooms" value="<?php if (isset($room_info)){echo $room_info['nr_rooms'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputInfo">
                         General information
                     </label>
-                    <textarea class="form-control" id="inputInfo" rows="3" placeholder="Here you can share general information about the room" name="general_info" required></textarea>
+                    <textarea class="form-control" id="inputInfo" rows="3" placeholder="Here you can share general information about the room" name="general_info" required><?php if (isset($room_info)){echo $room_info['general_info'];} ?></textarea>
                 </div>
-                <div class="form-group row">
-                    <input type="hidden" id="owner" name="owner" value="<?= $_SESSION['user_id'] ?>">
-                    <button type="submit" class="btn btn-primary">
-                        Add your room
-                    </button>
-                </div>
+                <?php if (isset($room_id)) { ?><input type="hidden" name="id" value="<?php echo $room_id ?>"><?php } ?>
+                <?php if ($display_buttons) { ?>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <input type="hidden" id="owner" name="owner" value="<?= $_SESSION['user_id'] ?>">
+                            <button type="submit" class="btn btn-primary">
+                                <?= $submit_button ?>
+                            </button>
+                        </div>
+                    </div>
+                <?php } ?>
             </form>
 
         </div>

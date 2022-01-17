@@ -46,8 +46,7 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
     /* Page info */
     $page_title = 'Home';
     $breadcrumbs = get_breadcrumbs([
-        'Final Project' => na('/DDWT21/Final_Project/', False),
-        'Home' => na('/DDWT21/Final_Project', True)
+        'Home' => na('/DDWT21/Final_Project/', True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 1);
@@ -70,9 +69,8 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
     /* Page info */
     $page_title = 'Register';
     $breadcrumbs = get_breadcrumbs([
-        'Final Project' => na('/DDWT21/Final_Project/', False),
-        'Home' => na('/DDWT21/Final_Project', False),
-        'Registration' => na('/DDWT21/Final_Project/register', True)
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Registration' => na('/DDWT21/Final_Project/register/', True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 2);
@@ -89,7 +87,7 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
 }
 
 /* Register POST */
-elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
+elseif (new_route('/DDWT21/Final_Project/register/', 'post')) {
     /* Register user */
     $feedback = register_user($db, $_POST);
 
@@ -105,7 +103,7 @@ elseif (new_route('/DDWT21/Final_Project/register', 'post')) {
 }
 
 /* My Account GET */
-elseif (new_route('/DDWT21/Final_Project/my_account', 'get')) {
+elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -114,7 +112,6 @@ elseif (new_route('/DDWT21/Final_Project/my_account', 'get')) {
     /* Page info */
     $page_title = 'My Account';
     $breadcrumbs = get_breadcrumbs([
-        'Final Project' => na('/DDWT21/Final_Project/', False),
         'Home' => na('/DDWT21/Final_Project/', False),
         'My Account' => na('/DDWT21/Final_Project/my_account/', True)
     ]);
@@ -137,13 +134,12 @@ elseif (new_route('/DDWT21/Final_Project/my_account', 'get')) {
 }
 
 /* Login GET */
-elseif (new_route('/DDWT21/Final_Project/login', 'get')) {
+elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
     /* Page info */
     $page_title = 'Login';
     $breadcrumbs = get_breadcrumbs([
-        'DDWT21' => na('/DDWT21/', False),
-        'Final Project' => na('/DDWT21/Final_Project/', False),
-        'Login' => na('/DDWT21/Final_Project/login', True)
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Login' => na('/DDWT21/Final_Project/login/', True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 4);
@@ -161,7 +157,7 @@ elseif (new_route('/DDWT21/Final_Project/login', 'get')) {
 }
 
 /* Login POST */
-elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
+elseif (new_route('/DDWT21/Final_Project/login/', 'post')) {
     /* Login user */
     $feedback = login_user($db, $_POST);
 
@@ -177,7 +173,7 @@ elseif (new_route('/DDWT21/Final_Project/login', 'post')) {
 }
 
 /* Logout GET */
-elseif(new_route('/DDWT21/Final_Project/logout', 'get')) {
+elseif(new_route('/DDWT21/Final_Project/logout/', 'get')) {
     $feedback = logout_user();
     redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
 }
@@ -192,16 +188,15 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
     $feedback = check_owner($db);
     if (!$feedback) {
         /* Redirect to my account */
-        $feedback = ['type' => 'danger', 'message' => 'You are not an owner'];
+        $feedback = ['type' => 'danger', 'message' => 'You are not an owner.'];
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 
     /* Page info */
     $page_title = 'Add room';
     $breadcrumbs = get_breadcrumbs([
-        'DDWT21' => na('/DDWT21/', False),
-        'Final Project' => na('/DDWT21/Final_Project', False),
-        'Add room' => na('/DDWT21/Final_Project/add_room', False)
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Add room' => na('/DDWT21/Final_Project/add_room/', False)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 5);
@@ -209,6 +204,8 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
     /* Page content */
     $page_subtitle = 'Here you can add a room';
     $page_content = display_role($db, $_SESSION['user_id']);
+    $submit_button = 'Add your room';
+    $form_action = '/DDWT21/Final_Project/add_room/';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -246,12 +243,12 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
+    $display_buttons = True;
 
     /* Page info */
     $page_title = 'View rooms';
     $breadcrumbs = get_breadcrumbs([
-        'DDWT21' => na('/DDWT21/', False),
-        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'Home' => na('/DDWT21/Final_Project/', False),
         'View rooms' => na('/DDWT21/Final_Project/view_rooms/', True)
     ]);
     /* Check which page is the active page */
@@ -284,15 +281,23 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
 
 /* Single room GET */
 elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
-    /* Get room from database */
+    session_start();
+    /* Get room info from database */
     $room_id = $_GET['room_id'];
     $room_info = get_room_info($db, $room_id);
+
+    /* Check if currently logged-in user is owner of the room */
+    if ($room_info['owner'] == $_SESSION['user_id']) {
+        $display_buttons = True;
+    }
+    else {
+        $display_buttons = False;
+    }
 
     /* Page info */
     $page_title = $room_info['street_name'] . ' ' . $room_info['house_number'] . $room_info['addition'] . ', ' . $room_info['city'];
     $breadcrumbs = get_breadcrumbs([
-        'DDWT21' => na('/DDWT21/', False),
-        'Final Project' => na('/DDWT21/Final_Project/', False),
+        'Home' => na('/DDWT21/Final_Project/', False),
         'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
         $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/rooms/?room_id='.$room_id, True)
     ]);
@@ -310,6 +315,35 @@ elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
     }
 
     include use_template('single_room');
+}
+
+/* Edit room GET */
+elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Get room info from database */
+    $room_id = $_GET['room_id'];
+    $room_info = get_room_info($db, $room_id);
+
+    /* Check if currently logged-in user is owner of the room */
+    if ($room_info['owner'] = $_SESSION['user_id']) {
+        $display_buttons = True;
+    }
+    else {
+        $display_buttons = False;
+    }
+
+    /* Page info */
+    $page_title = 'Edit your room';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/add_room/', True)
+    ]);
+
+    include use_template('add_room');
 }
 
 else {
