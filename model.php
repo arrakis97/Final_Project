@@ -634,6 +634,14 @@ function update_room($pdo, $room_info) {
         ];
     }
 
+    /* Create room_info array to easily compare addresses */
+    $room_info_array = Array (
+        'city' => $room_info['city'],
+        'street_name' => $room_info['street_name'],
+        'house_number' => $room_info['house_number'],
+        'addition' => $room_info['addition']
+    );
+
     /* Get current room address */
     $current_address = room_address($pdo, $room_info['room_id']);
 
@@ -646,15 +654,9 @@ function update_room($pdo, $room_info) {
         $room_info['addition']
     ]);
     $rooms = $stmt->fetch();
+
     if (
-        $room_info['city'] == $rooms['city'] and
-        $room_info['street_name'] == $rooms['street_name'] and
-        $room_info['house_number'] == $rooms['house_number'] and
-        $room_info['addition'] == $rooms['addition'] and
-        $room_info['city'] != $current_address['city'] and
-        $room_info['street_name'] != $current_address['street_name'] and
-        $room_info['house_number'] != $current_address['house_number'] and
-        $room_info['addition'] != $current_address['addition']
+        $room_info_array === $rooms and $room_info !== $current_address
     ) {
         return [
             'type' => 'danger',
