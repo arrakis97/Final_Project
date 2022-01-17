@@ -65,16 +65,16 @@
                         Type of room
                     </label>
                     <select class="form-select" id="inputType" name="type" required>
-                        <option selected disabled value="<?php if (isset($room_info)){echo $room_info['type'];} ?>">
+                        <option <?php if (!isset($room_info)){ ?>selected <?php } ?> disabled value="">
                             Pick an option
                         </option>
-                        <option value="Room in student house">
+                        <option <?php if (isset($room_info) and $room_info['type'] == 'Room in student house'){ ?> selected <?php } ?> value="Room in student house">
                             Room in student house
                         </option>
-                        <option value="Room in owner's house">
+                        <option <?php if (isset($room_info) and $room_info['type'] == 'Room in owner\'s house'){ ?> selected <?php } ?> value="Room in owner's house">
                             Room in owner's house
                         </option>
-                        <option value="Apartment">
+                        <option <?php if (isset($room_info) and $room_info['type'] == 'Apartment'){ ?> selected <?php } ?> value="Apartment">
                             Apartment
                         </option>
                     </select>
@@ -96,13 +96,13 @@
                         Is rent allowance available?
                     </label>
                     <select class="form-select" id="inputAllowance" name="rent_allowance" required>
-                        <option selected disabled value="">
+                        <option <?php if (!isset($room_info)){ ?>selected <?php } ?> disabled value="">
                             Pick an option
                         </option>
-                        <option value="1">
+                        <option <?php if (isset($room_info) and $room_info['rent_allowance'] == 1){ ?> selected <?php } ?> value="1">
                             Rent allowance is available
                         </option>
-                        <option value="0">
+                        <option <?php if (isset($room_info) and $room_info['rent_allowance'] == 0){ ?> selected <?php } ?> value="0">
                             Rent allowance is not available
                         </option>
                     </select>
@@ -112,13 +112,13 @@
                         Is the price including utilities?
                     </label>
                     <select class="form-select" id="inputUtilities" name="including_utilities" required>
-                        <option selected disabled value="">
+                        <option <?php if (!isset($room_info)){ ?>selected <?php } ?> disabled value="">
                             Pick an option
                         </option>
-                        <option value="1">
+                        <option <?php if (isset($room_info) and $room_info['including_utilities'] == 1){ ?> selected <?php } ?> value="1">
                             Price is including utilities
                         </option>
-                        <option value="0">
+                        <option <?php if (isset($room_info) and $room_info['including_utilities'] == 0){ ?> selected <?php } ?> value="0">
                             Price is not including utilities
                         </option>
                     </select>
@@ -128,13 +128,13 @@
                         Is the kitchen shared?
                     </label>
                     <select class="form-select" id="inputKitchen" name="shared_kitchen" required>
-                        <option selected disabled value="">
+                        <option <?php if (!isset($room_info)){ ?>selected <?php } ?> disabled value="">
                             Pick an option
                         </option>
-                        <option value="1">
+                        <option <?php if (isset($room_info) and $room_info['shared_kitchen'] == 1){ ?> selected <?php } ?> value="1">
                             The kitchen is shared
                         </option>
-                        <option value="0">
+                        <option <?php if (isset($room_info) and $room_info['shared_kitchen'] == 0){ ?> selected <?php } ?> value="0">
                             The kitchen is not shared
                         </option>
                     </select>
@@ -144,13 +144,13 @@
                         Is the bathroom shared?
                     </label>
                     <select class="form-select" id="inputBathroom" name="shared_bathroom" required>
-                        <option selected disabled value="">
+                        <option <?php if (!isset($room_info)){ ?>selected <?php } ?> disabled value="">
                             Pick an option
                         </option>
-                        <option value="1">
+                        <option <?php if (isset($room_info) and $room_info['shared_bathroom'] == 1){ ?> selected <?php } ?> value="1">
                             The bathroom is shared
                         </option>
-                        <option value="0">
+                        <option <?php if (isset($room_info) and $room_info['shared_bathroom'] == 0){ ?> selected <?php } ?> value="0">
                             The bathroom is not shared
                         </option>
                     </select>
@@ -173,7 +173,7 @@
                     </label>
                     <textarea class="form-control" id="inputInfo" rows="3" placeholder="Here you can share general information about the room" name="general_info" required><?php if (isset($room_info)){echo $room_info['general_info'];} ?></textarea>
                 </div>
-                <?php if (isset($room_id)) { ?><input type="hidden" name="id" value="<?php echo $room_id ?>"><?php } ?>
+                <?php if (isset($room_id)) { ?><input type="hidden" name="room_id" value="<?php echo $room_id ?>"><?php } ?>
                 <?php if ($display_buttons) { ?>
                     <div class="form-group row">
                         <div class="col-sm-10">

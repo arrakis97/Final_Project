@@ -212,6 +212,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
         $error_msg = get_error($_GET['error_msg']);
     }
 
+    /* Choose template */
     include use_template('add_room');
 }
 
@@ -234,6 +235,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 
+    /* Choose template */
     include use_template('add_room');
 }
 
@@ -276,11 +278,12 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
         }
     }
 
+    /* Choose template */
     include use_template('main');
 }
 
 /* Single room GET */
-elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
+elseif (new_route('/DDWT21/Final_Project/room/', 'get')) {
     session_start();
     /* Get room info from database */
     $room_id = $_GET['room_id'];
@@ -299,7 +302,7 @@ elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
         'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
-        $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/rooms/?room_id='.$room_id, True)
+        $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/room/?room_id='.$room_id, True)
     ]);
 
     /* Check which page is the active page */
@@ -314,6 +317,7 @@ elseif (new_route('/DDWT21/Final_Project/rooms/', 'get')) {
         $error_msg = get_error($_GET['error_msg']);
     }
 
+    /* Choose template */
     include use_template('single_room');
 }
 
@@ -343,7 +347,44 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
         'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/add_room/', True)
     ]);
 
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = 'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'];
+    $page_content = 'Edit the room below';
+    $submit_button = 'Edit room';
+    $form_action = '/DDWT21/Final_Project/edit/';
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
     include use_template('add_room');
+}
+
+/* Edit room POST */
+elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Update room in database */
+    $feedback = update_room($db, $_POST);
+    $error_msg = get_error($feedback);
+
+    if ($feedback['type'] == 'danger') {
+        redirect(sprintf('/DDWT21/Final_Project/edit/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/room/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
+    }
+
+    /* Choose template */
+    include use_template('single_room');
 }
 
 else {

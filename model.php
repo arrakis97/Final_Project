@@ -528,7 +528,7 @@ function get_rooms_table($rooms) {
         <tr>
             <th scope="row">'.$value['city'].'</th>
             <th scope="row">'.$value['street_name'].' '.$value['house_number'].$value['addition'].'</th>
-            <td><a href="/DDWT21/Final_Project/rooms/?room_id='.$value['id'].'" role="button" class="btn btn-primary">More info</a></td>
+            <td><a href="/DDWT21/Final_Project/room/?room_id='.$value['id'].'" role="button" class="btn btn-primary">More info</a></td>
         </tr>
         ';
     }
@@ -594,7 +594,7 @@ function update_room($pdo, $room_info) {
         !isset($room_info['nr_rooms']) or
         empty($room_info['general_info']) or
         empty($room_info['owner']) or
-        empty($room_info['id'])
+        empty($room_info['room_id'])
     ) {
         return [
             'type' => 'danger',
@@ -635,19 +635,22 @@ function update_room($pdo, $room_info) {
     }
 
     /* Get current room address */
-    $current_address = room_address($pdo, $room_info['id']);
+    $current_address = room_address($pdo, $room_info['room_id']);
 
     /* Check if room exists already */
-    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
+    $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
     $stmt->execute([
         $room_info['city'],
         $room_info['street_name'],
         $room_info['house_number'],
         $room_info['addition']
     ]);
-    $rooms = $stmt->fetchAll();
+    $rooms = $stmt->fetch();
     if (
-        count($rooms) >= 1 and
+        $room_info['city'] == $rooms['city'] and
+        $room_info['street_name'] == $rooms['street_name'] and
+        $room_info['house_number'] == $rooms['house_number'] and
+        $room_info['addition'] == $rooms['addition'] and
         $room_info['city'] != $current_address['city'] and
         $room_info['street_name'] != $current_address['street_name'] and
         $room_info['house_number'] != $current_address['house_number'] and
@@ -678,7 +681,7 @@ function update_room($pdo, $room_info) {
         $room_info['nr_roommates'],
         $room_info['nr_rooms'],
         $room_info['general_info'],
-        $room_info['id'],
+        $room_info['room_id'],
         $room_info['owner']
     ]);
     $updated = $stmt->rowCount();
