@@ -700,3 +700,25 @@ function update_room($pdo, $room_info) {
         ];
     }
 }
+
+function remove_room($pdo, $room_id) {
+    /* Get room address */
+    $room_address = room_address($pdo, $room_id);
+
+    /* Delete room */
+    $stmt = $pdo->prepare('DELETE FROM rooms WHERE id = ?');
+    $stmt->execute([$room_id]);
+    $deleted = $stmt->rowCount();
+    if ($deleted == 1) {
+        return [
+            'type' => 'success',
+            'message' => sprintf('The room at %s %s%s, %s was removed', $room_address['street_name'], $room_address['house_number'], $room_address['addition'], $room_address['city'])
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong. The room was not removed.'
+        ];
+    }
+}

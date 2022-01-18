@@ -192,6 +192,8 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 
+    $display_buttons = True;
+
     /* Page info */
     $page_title = 'Add room';
     $breadcrumbs = get_breadcrumbs([
@@ -276,6 +278,11 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
         else {
             $left_content = get_rooms_table($rooms);
         }
+    }
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
     }
 
     /* Choose template */
@@ -376,6 +383,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
     $feedback = update_room($db, $_POST);
     $error_msg = get_error($feedback);
 
+    /* Redirect to the correct page with an error or success message */
     if ($feedback['type'] == 'danger') {
         redirect(sprintf('/DDWT21/Final_Project/edit/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
     }
@@ -385,6 +393,34 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
 
     /* Choose template */
     include use_template('single_room');
+}
+
+/* Remove room POST */
+elseif (new_route('/DDWT21/Final_Project/remove/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Check if currently logged-in user is owner of the room */
+    if ($room_info['owner'] = $_SESSION['user_id']) {
+        $display_buttons = True;
+    }
+    else {
+        $display_buttons = False;
+    }
+
+    /* Get room id */
+    $room_id = $_POST['room_id'];
+
+    /* Remove room from database */
+    $feedback = remove_room($db, $room_id);
+    $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
+
+    include use_template('main');
 }
 
 else {

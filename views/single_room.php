@@ -72,7 +72,7 @@
                     </div>
                     <div class="col-sm-2">
                         <form action="/DDWT21/Final_Project/remove/" method="POST">
-                            <input type="hidden" value="<?= $room_id ?>" name="id">
+                            <input type="hidden" value="<?= $room_id ?>" name="room_id">
                             <button type="submit" class="btn btn-danger">Remove</button>
                         </form>
                     </div>
