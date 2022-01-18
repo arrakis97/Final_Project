@@ -736,6 +736,8 @@ function check_opt_in ($pdo, $room, $user) {
 }
 
 function opt_in ($pdo, $room, $user) {
+    $room = (int) $room;
+    $user = (int) $user;
     /* Check if all fields are set */
     if (
         empty($room) or
@@ -777,6 +779,52 @@ function opt_in ($pdo, $room, $user) {
         return [
             'type' => 'danger',
             'message' => 'Something went wrong and you have not been opted-in to this room.'
+        ];
+    }
+}
+
+function opt_out ($pdo, $room, $user) {
+    /* Check if all fields are set */
+    if (
+        empty($room) or
+        empty($user)
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'Not all fields are set.'
+        ];
+    }
+
+    /* Check if the user is a tenant */
+    if (check_owner($pdo)) {
+        return [
+            'type' => 'danger',
+            'message' => 'As an owner you are not able to opt-out from rooms.'
+        ];
+    }
+
+    /* Check if the user has already opted-in */
+    if (!check_opt_in($pdo, $room, $user)) {
+        return [
+            'type' => 'danger',
+            'message' => 'You have not yet opted in to this room, so you cannot opt out.'
+        ];
+    }
+
+    /* Opt out user from room */
+    $stmt = $pdo->prepare('DELETE FROM opt_in WHERE room = ? AND user = ?');
+    $stmt->execute([$room, $user]);
+    $deleted = $stmt->rowCount();
+    if ($deleted == 1) {
+        return [
+            'type' => 'success',
+            'message' => 'You have successfully opted out of the room.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong and you have not been opted out of the room.'
         ];
     }
 }

@@ -424,6 +424,34 @@ elseif (new_route('/DDWT21/Final_Project/opt-in/', 'post')) {
     /* Opt-in to room */
     $feedback = opt_in($db, $_POST['room_id'], $_POST['user_id']);
     $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'danger') {
+        redirect(sprintf('/DDWT21/Final_Project/room/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
+}
+
+/* Opt-out of room POST */
+elseif (new_route('/DDWT21/Final_Project/opt-out/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Opt-out of room */
+    $feedback = opt_out($db, $_POST['room_id'], $_POST['user_id']);
+    $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'danger') {
+        redirect(sprintf('/DDWT21/Final_Project/room/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
 }
 
 
