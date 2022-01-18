@@ -92,9 +92,35 @@
                         The monthly price for this room is
                     </p>
                     <h2>€<?= $room_info['price'] ?></h2>
+                    <br>
                     <p><?php if ($room_info['including_utilities'] == 1) {echo "This price is including utilities";} else {echo "This price is not including utilities";} ?></p>
                 </div>
             </div>
+            <?php if (!check_owner($db)) { ?>
+                <hr>
+                <div class="card">
+                    <div class="card-header">
+                        Opt-in
+                    </div>
+                    <div class="card-body">
+                        <?php if (check_opt_in($db, $room_id, $_SESSION['user_id'])) { ?>
+                            <p>Click the button below to opt out of this room.</p>
+                            <form action="/DDWT21/Final_Project/opt-out/" method="POST">
+                                <input type="hidden" value="<?= $room_id ?>" name="room_id">
+                                <input type="hidden" value="<?= $user_id ?>" name="user_id">
+                                <button type="submit" class="btn btn-danger">Opt-out</button>
+                            </form>
+                        <?php } else { ?>
+                            <p>Click the button below to opt-in to this room. If you do this, the owner will be able to see your information and message you.</p>
+                            <form action="/DDWT21/Final_Project/opt-in/" method="POST">
+                                <input type="hidden" value="<?= $room_id ?>" name="room_id">
+                                <input type="hidden" value="<?= $user_id ?>" name="user_id">
+                                <button type="submit" class="btn btn-primary">Opt-in</button>
+                            </form>
+                        <?php } ?>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
 
     </div>

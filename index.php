@@ -247,7 +247,6 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
-    $display_buttons = True;
 
     /* Page info */
     $page_title = 'View rooms';
@@ -402,14 +401,6 @@ elseif (new_route('/DDWT21/Final_Project/remove/', 'post')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
-    /* Check if currently logged-in user is owner of the room */
-    if ($room_info['owner'] = $_SESSION['user_id']) {
-        $display_buttons = True;
-    }
-    else {
-        $display_buttons = False;
-    }
-
     /* Get room id */
     $room_id = $_POST['room_id'];
 
@@ -420,6 +411,66 @@ elseif (new_route('/DDWT21/Final_Project/remove/', 'post')) {
     /* Redirect to the correct page with an error or success message */
     redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
 
+    include use_template('main');
+}
+
+/* Opt-in to room POST */
+elseif (new_route('/DDWT21/Final_Project/opt-in/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Opt-in to room */
+    $feedback = opt_in($db, $_POST['room_id'], $_POST['user_id']);
+    $error_msg = get_error($feedback);
+}
+
+
+/* Check opt-ins GET */
+elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Page info */
+    $page_title = 'Opt-ins';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Opt-ins' => na('/DDWT21/Final_Project/opt-ins/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = 'The overview of all your opt-ins.';
+    $page_content = 'Here you can find all the rooms that you have opted-in to.';
+    if (check_owner($db)) {
+        $rooms = get_rooms_owner($db, $_SESSION['user_id']);
+        if (empty($rooms)) {
+            $left_content = '<b>You have not added any rooms yet.</b>';
+        }
+        else {
+            $left_content = get_rooms_table($rooms);
+        }
+    }
+    else {
+        $rooms = get_rooms($db);
+        if (empty($rooms)) {
+            $left_content = '<b>There are no available rooms.</b>';
+        }
+        else {
+            $left_content = get_rooms_table($rooms);
+        }
+    }
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
     include use_template('main');
 }
 

@@ -722,3 +722,61 @@ function remove_room($pdo, $room_id) {
         ];
     }
 }
+
+function check_opt_in ($pdo, $room, $user) {
+    $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ? AND user = ?');
+    $stmt->execute([$room, $user]);
+    $check = $stmt->rowCount();
+    if ($check) {
+        return True;
+    }
+    else {
+        return False;
+    }
+}
+
+function opt_in ($pdo, $room, $user) {
+    /* Check if all fields are set */
+    if (
+        empty($room) or
+        empty($user)
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'Not all fields are set.'
+        ];
+    }
+
+    /* Check if the user is a tenant */
+    if (check_owner($pdo)) {
+        return [
+            'type' => 'danger',
+            'message' => 'As an owner you are not able to opt-in to rooms.'
+        ];
+    }
+
+    /* Check if the user has already opted-in */
+    if (check_opt_in($pdo, $room, $user)) {
+        return [
+            'type' => 'danger',
+            'message' => 'You have already opted-in to this room.'
+        ];
+    }
+
+    /* Opt-in user to room */
+    $stmt = $pdo->prepare('INSERT INTO opt_in (room, user) VALUES (?, ?)');
+    $stmt->execute([$room, $user]);
+    $inserted = $stmt->rowCount();
+    if ($inserted == 1) {
+        return [
+            'type' => 'success',
+            'message' => 'You have successfully opted-in to this room.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong and you have not been opted-in to this room.'
+        ];
+    }
+}
