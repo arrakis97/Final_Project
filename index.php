@@ -477,7 +477,7 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     if (check_owner($db)) {
         $rooms = get_rooms_owner($db, $_SESSION['user_id']);
         if (empty($rooms)) {
-            $left_content = '<b>You have not added any rooms yet.</b>';
+            $left_content = '<b>You have not added any rooms that people could opt in to.</b>';
         }
         else {
             $left_content = get_rooms_table($rooms);

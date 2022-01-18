@@ -828,3 +828,5 @@ function opt_out ($pdo, $room, $user) {
         ];
     }
 }
+
+
