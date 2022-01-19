@@ -55,10 +55,11 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    Role
+                    Profile
                 </div>
                 <div class="card-body">
-                    <p>Your role is: <?= $role ?></p>
+                    <p>Click the button below to view and edit your profile.</p>
+                    <a href="/DDWT21/Final_Project/view_profile/?user_id=<?= $user_id ?>" class="btn btn-primary">View/edit profile</a>
                 </div>
             </div>
         </div>

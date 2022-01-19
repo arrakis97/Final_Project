@@ -109,6 +109,8 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
+    $user_id = $_SESSION['user_id'];
+
     /* Page info */
     $page_title = 'My Account';
     $breadcrumbs = get_breadcrumbs([
@@ -121,8 +123,8 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     /* Page content */
     $page_subtitle = 'Your account';
     $page_content = 'Here you can see information about your account';
-    $user = display_user($db, $_SESSION['user_id'])['first_name'];
-    $role = display_role($db, $_SESSION['user_id']);
+    $user = display_user($db, $user_id)['first_name'];
+    $role = display_role($db, $user_id);
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -538,6 +540,61 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
     else {
         $left_content = '<b>No one has opted in yet.</b>';
     }
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
+    include use_template('main');
+}
+
+elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Check if the viewer is either the user self or the owner of a room the user opted in to */
+    $current_user = $_SESSION['user_id'];
+    $user_profile = $_GET['user_id'];
+
+    if ($current_user != $user_profile) {
+        if (display_role($db, $current_user) == 'Tenant') {
+            if (display_role($db, $user_profile) == 'Tenant') {
+                $feedback = ['type' => 'danger', 'message' => 'You are not allowed to see the user profiles of other tenants.'];
+                redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+            }
+            else {
+                if (!check_tenant_owner($db, $user_profile, $current_user)) {
+                    $feedback = ['type' => 'danger', 'message' => 'You are not opted in to one of these owner\'s room and cannot see their profile.'];
+                    redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+                }
+            }
+        }
+        else {
+            if (display_role($db, $user_profile) == 'Owner') {
+                $feedback = ['type' => 'danger', 'message' => 'You are not allowed to see the user profiles of other owners.'];
+                redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+            }
+            else {
+                if (!check_owner_tenant($db, $current_user, $user_profile)) {
+                    $feedback = ['type' => 'danger', 'message' => 'This tenant has not opted in to one of your rooms and you cannot see their profile.'];
+                    redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+                }
+            }
+        }
+    }
+
+    /* Page info */
+    $page_title = 'Opt-ins';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'View profile' => na('/DDWT21/Final_Project/opt-ins/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
