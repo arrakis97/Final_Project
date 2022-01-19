@@ -512,7 +512,7 @@ function get_rooms($pdo) {
     return $rooms_exp;
 }
 
-function get_rooms_table($rooms) {
+function get_rooms_table($pdo, $rooms) {
     $table_exp = '
     <table class="table table-hover">
     <thead
@@ -520,6 +520,13 @@ function get_rooms_table($rooms) {
         <th scope="col">City</th>
         <th scope="col">Address</th>
         <th scope="col"></th>
+        ';
+        if (check_owner($pdo)) {
+            $table_exp .= '
+            <th scope="col"></th>
+            ';
+        }
+    $table_exp .= '
     </tr>
     </thead>
     <tbody>';
@@ -529,6 +536,13 @@ function get_rooms_table($rooms) {
             <th scope="row">'.$value['city'].'</th>
             <th scope="row">'.$value['street_name'].' '.$value['house_number'].$value['addition'].'</th>
             <td><a href="/DDWT21/Final_Project/room/?room_id='.$value['id'].'" role="button" class="btn btn-primary">More info</a></td>
+            ';
+            if (check_owner($pdo)) {
+                $table_exp .= '
+                <td><a href="/DDWT21/Final_Project/room_opt-ins/?room_id='.$value['id'].'" role="button" class="btn btn-primary">Opt-ins</a></td>
+                ';
+            }
+        $table_exp .= '
         </tr>
         ';
     }
@@ -830,8 +844,60 @@ function opt_out ($pdo, $room, $user) {
 }
 
 function tenant_opt_in_table ($pdo, $user) {
-    $stmt = $pdo->prepare('SELECT  * FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
+    $stmt = $pdo->prepare('SELECT id, city, street_name, house_number, addition FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
     $stmt->execute([$user]);
     $rooms = $stmt->fetchAll();
-    return get_rooms_table($rooms);
+    return get_rooms_table($pdo, $rooms);
+}
+
+function get_users_table ($users) {
+    $table_exp = '
+    <table class="table table-hover">
+    <thead
+    <tr>
+        <th scope="col">Tenant</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>';
+    foreach($users as $user) {
+        $table_exp .= '
+        <tr>
+            <td>' . $user['first_name'] . ' ' . $user['last_name'] . '</td>
+            <td><a href="/DDWT21/Final_Project/view_profile/?user_id='.$user['id'].'" role="button" class="btn btn-primary">View profile</a></td>
+        </tr>
+        ';
+    }
+    $table_exp .= '
+    </tbody>
+    </table>
+    ';
+    return $table_exp;
+}
+
+function owner_opt_in_table ($pdo, $room) {
+    $stmt = $pdo->prepare('SELECT users.id, users.first_name, users.last_name FROM users JOIN opt_in ON users.id = opt_in.user WHERE opt_in.room = ?');
+    $stmt->execute([$room]);
+    $users = $stmt->fetchAll();
+    $users_exp = Array();
+
+    foreach ($users as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $users_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
+
+    return get_users_table($users_exp);
+}
+
+function check_room_interest ($pdo, $room) {
+    $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ?');
+    $stmt->execute([$room]);
+    $check = $stmt->rowCount();
+    if ($check) {
+        return True;
+    }
+    else {
+        return False;
+    }
 }

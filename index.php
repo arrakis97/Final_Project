@@ -266,7 +266,7 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
             $left_content = '<b>You have not added any rooms yet.</b>';
         }
         else {
-            $left_content = get_rooms_table($rooms);
+            $left_content = get_rooms_table($db, $rooms);
         }
     }
     else {
@@ -275,7 +275,7 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
             $left_content = '<b>There are no available rooms.</b>';
         }
         else {
-            $left_content = get_rooms_table($rooms);
+            $left_content = get_rooms_table($db, $rooms);
         }
     }
 
@@ -339,7 +339,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
     $room_info = get_room_info($db, $room_id);
 
     /* Check if currently logged-in user is owner of the room */
-    if ($room_info['owner'] = $_SESSION['user_id']) {
+    if ($room_info['owner'] == $_SESSION['user_id']) {
         $display_buttons = True;
     }
     else {
@@ -350,7 +350,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
     $page_title = 'Edit your room';
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
-        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/add_room/', True)
+        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/edit/?room_id='.$room_id, True)
     ]);
 
     /* Check which page is the active page */
@@ -455,11 +455,15 @@ elseif (new_route('/DDWT21/Final_Project/opt-out/', 'post')) {
 }
 
 
-/* Check opt-ins GET */
+/* Check opt-ins for tenant GET */
 elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
+    }
+    /* Check if the user is a tenant */
+    if (check_owner($db)) {
+        redirect('/DDWT21/Final_Project/view_rooms/');
     }
 
     /* Page info */
@@ -474,23 +478,65 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     /* Page content */
     $page_subtitle = 'The overview of all your opt-ins.';
     $page_content = 'Here you can find all the rooms that you have opted-in to.';
-    if (check_owner($db)) {
-        $rooms = get_rooms_owner($db, $_SESSION['user_id']);
-        if (empty($rooms)) {
-            $left_content = '<b>You have not added any rooms that people could opt in to.</b>';
-        }
-        else {
-            $left_content = get_rooms_table($rooms);
-        }
+
+    $rooms = get_rooms($db);
+    if (empty($rooms)) {
+        $left_content = '<b>There are no rooms you have opted in to yet.</b>';
     }
     else {
-        $rooms = get_rooms($db);
-        if (empty($rooms)) {
-            $left_content = '<b>There are no rooms you have opted in to yet.</b>';
-        }
-        else {
-            $left_content = tenant_opt_in_table($db, $_SESSION['user_id']);
-        }
+        $left_content = tenant_opt_in_table($db, $_SESSION['user_id']);
+    }
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
+    include use_template('main');
+}
+
+/* Check opt-ins for owner GET */
+elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+    /* Check if the user is an owner */
+    if (!check_owner($db)) {
+        redirect('/DDWT21/Final_Project/opt-ins/');
+    }
+
+    $room_id = $_GET['room_id'];
+    $room_info = get_room_info($db, $room_id);
+
+    /* Check if currently logged-in user is owner of the room */
+    if ($room_info['owner'] != $_SESSION['user_id']) {
+        $feedback = ['type' => 'danger', 'message' => 'You are not the owner of this room.'];
+        redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
+    }
+
+    $address = room_address($db, $room_id);
+
+    /* Page info */
+    $page_title = 'Opt-ins for ' . $address['street_name'] . ' ' . $address['house_number'] . $address['addition'] . ', ' . $address['city'];
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
+        'Opt-ins for ' . $address['street_name'] . ' ' . $address['house_number'] . $address['addition'] . ', ' . $address['city'] => na('/DDWT21/Final_Project/room_opt-ins/?room_id='.$room_id, True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = 'The overview of all your opt-ins.';
+    $page_content = 'Here you can find all opt-ins for this specific room.';
+
+    if (check_room_interest($db, $room_id)) {
+        $left_content = owner_opt_in_table($db, $room_id);
+    }
+    else {
+        $left_content = '<b>No one has opted in yet.</b>';
     }
 
     /* Check if an error message is set and display it if available */
