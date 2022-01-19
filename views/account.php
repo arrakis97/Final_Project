@@ -62,34 +62,17 @@
                 </div>
             </div>
         </div>
-
-        <?php if (check_owner($db)) { ?>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        Add a room
-                    </div>
-                    <div class="card-body">
-                        <p>Click here to add a room</p>
-                        <a href="/DDWT21/Final_Project/add_room/" class="btn btn-primary">Add room</a>
-                    </div>
+        <div class="col-md-4" >
+            <div class="card">
+                <div class="card-header">
+                    Opt-ins
+                </div>
+                <div class="card-body">
+                    <p>Click here to check your opt-ins</p>
+                    <a href="/DDWT21/Final_Project/opt-ins/" class="btn btn-primary">Check opt-ins</a>
                 </div>
             </div>
-        <?php } ?>
-
-        <?php if (!check_owner($db)) { ?>
-            <div class="col-md-4" >
-                <div class="card">
-                    <div class="card-header">
-                        Opt-ins
-                    </div>
-                    <div class="card-body">
-                        <p>Click here to check your opt-ins</p>
-                        <a href="/DDWT21/Final_Project/opt-ins/" class="btn btn-primary">Check opt-ins</a>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
+        </div>
 
     </div>
 </div>
