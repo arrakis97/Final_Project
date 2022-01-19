@@ -829,4 +829,9 @@ function opt_out ($pdo, $room, $user) {
     }
 }
 
-
+function tenant_opt_in_table ($pdo, $user) {
+    $stmt = $pdo->prepare('SELECT  * FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
+    $stmt->execute([$user]);
+    $rooms = $stmt->fetchAll();
+    return get_rooms_table($rooms);
+}

@@ -486,10 +486,10 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     else {
         $rooms = get_rooms($db);
         if (empty($rooms)) {
-            $left_content = '<b>There are no available rooms.</b>';
+            $left_content = '<b>There are no rooms you have opted in to yet.</b>';
         }
         else {
-            $left_content = get_rooms_table($rooms);
+            $left_content = tenant_opt_in_table($db, $_SESSION['user_id']);
         }
     }
 
