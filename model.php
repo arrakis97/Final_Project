@@ -253,8 +253,21 @@ function register_user($pdo, $form_data) {
 
     /* Save user to the database */
     try {
-        $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, email, language, occupation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$form_data['username'], $password, $form_data['firstname'], $form_data['lastname'], $form_data['role'], $form_data['birthdate'], $form_data['phonenumber'], $form_data['email'], $form_data['language'], $form_data['occupation']]);
+        $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, 
+                   email, language, occupation, biography) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->execute([
+            $form_data['username'],
+            $password,
+            $form_data['firstname'],
+            $form_data['lastname'],
+            $form_data['role'],
+            $form_data['birthdate'],
+            $form_data['phonenumber'],
+            $form_data['email'],
+            $form_data['language'],
+            $form_data['occupation'],
+            $form_data['biography']
+        ]);
         $user_id = $pdo->lastInsertId();
     }
     catch (PDOException $e) {
@@ -932,7 +945,7 @@ function check_owner_tenant ($pdo, $owner, $tenant) {
     $stmt->execute([$tenant]);
     $owners = $stmt->fetchAll();
     foreach ($owners as $value) {
-        if ($value == $owner) {
+        if ($value['owner'] == $owner) {
             return True;
         }
     }
@@ -944,9 +957,21 @@ function check_tenant_owner($pdo, $owner, $tenant) {
     $stmt->execute([$owner]);
     $tenants = $stmt->fetchAll();
     foreach ($tenants as $value) {
-        if ($value == $tenant) {
+        if ($value['id'] == $tenant) {
             return True;
         }
     }
     return False;
+}
+
+function get_profile_info ($pdo, $user_id) {
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $user_info = $stmt->fetch();
+    $user_info_exp = Array();
+
+    foreach ($user_info as $key => $value) {
+        $user_info_exp[$key] = htmlspecialchars($value);
+    }
+    return $user_info_exp;
 }

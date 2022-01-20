@@ -37,31 +37,31 @@
             <div class="pd-15">&nbsp;</div>
 
             <form action="/DDWT21/Final_Project/register/" method="POST">
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputUsername">
                         Username
                     </label>
                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter a username" name="username" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputPassword">
                         Password
                     </label>
                     <input type="password" class="form-control" id="inputPassword" placeholder="Enter a password" name="password" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputFirstName">
                         First name
                     </label>
                     <input type="text" class="form-control" id="inputFirstName" placeholder="Enter your first name" name="firstname" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputLastName">
                         Last name
                     </label>
                     <input type="text" class="form-control" id="inputLastName" placeholder="Enter your last name" name="lastname" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="role">
                         Owner or tenant
                     </label>
@@ -77,25 +77,25 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputDate">
                         Date of birth
                     </label>
                     <input type="text" class="form-control" id="inputDate" placeholder="yyyy-mm-dd" name="birthdate" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputPhone">
                         Phone number
                     </label>
                     <input type="text" class="form-control" id="inputPhone" placeholder="0612345678" name="phonenumber" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="inputEmail">
                         E-mail
                     </label>
                     <input type="text" class="form-control" id="inputEmail" placeholder="example@example.com" name="email" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="language">
                         Select your language
                     </label>
@@ -111,11 +111,17 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="occupation">
                         State your occupation (eg. studies/profession)
                     </label>
                     <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required>
+                </div>
+                <div class="form-group row">
+                    <label for="biography">
+                        Biography
+                    </label>
+                    <textarea class="form-control" id="biography" rows="3" placeholder="Here you can tell something about yourself" name="biography"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Register now</button>
             </form>

@@ -550,6 +550,7 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
     include use_template('main');
 }
 
+/* View profile GET */
 elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
@@ -587,14 +588,29 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
         }
     }
 
+    /* Get profile info from database */
+    $user_info = get_profile_info($db, $user_profile);
+
+    /* Check if currently logged-in user is owner of the profile */
+    if ($current_user == $user_profile) {
+        $display_buttons = True;
+    }
+    else {
+        $display_buttons = False;
+    }
+
     /* Page info */
-    $page_title = 'Opt-ins';
+    $page_title = 'View profile';
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
-        'View profile' => na('/DDWT21/Final_Project/opt-ins/', True)
+        'View profile' => na('/DDWT21/Final_Project/view_profile/', True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = 'This is the profile of '.$user_info['first_name'] . ' ' . $user_info['last_name'];
+    $page_content = $user_info['biography'];
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
