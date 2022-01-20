@@ -618,7 +618,7 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
     }
 
     /* Choose template */
-    include use_template('main');
+    include use_template('single_profile');
 }
 
 else {
