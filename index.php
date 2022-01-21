@@ -301,12 +301,7 @@ elseif (new_route('/DDWT21/Final_Project/room/', 'get')) {
     $room_info = get_room_info($db, $room_id);
 
     /* Check if currently logged-in user is owner of the room */
-    if ($room_info['owner'] == $_SESSION['user_id']) {
-        $display_buttons = True;
-    }
-    else {
-        $display_buttons = False;
-    }
+    $display_buttons = $room_info['owner'] == $_SESSION['user_id'];
 
     /* Page info */
     $page_title = $room_info['street_name'] . ' ' . $room_info['house_number'] . $room_info['addition'] . ', ' . $room_info['city'];
@@ -344,12 +339,7 @@ elseif (new_route('/DDWT21/Final_Project/edit_room/', 'get')) {
     $room_info = get_room_info($db, $room_id);
 
     /* Check if currently logged-in user is owner of the room */
-    if ($room_info['owner'] == $_SESSION['user_id']) {
-        $display_buttons = True;
-    }
-    else {
-        $display_buttons = False;
-    }
+    $display_buttons = $room_info['owner'] == $_SESSION['user_id'];
 
     /* Page info */
     $page_title = 'Edit your room';
@@ -594,12 +584,7 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
     $user_info = get_profile_info($db, $user_profile);
 
     /* Check if currently logged-in user is owner of the profile */
-    if ($current_user == $user_profile) {
-        $display_buttons = True;
-    }
-    else {
-        $display_buttons = False;
-    }
+    $display_buttons = $current_user == $user_profile;
 
     /* Page info */
     $page_title = 'View profile';
