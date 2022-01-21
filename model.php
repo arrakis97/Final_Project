@@ -1057,16 +1057,26 @@ function remove_profile ($pdo, $user_id) {
 }
 
 function inbox ($pdo, $user) {
-    $stmt = $pdo->prepare('SELECT DISTINCT users.id, users.first_name, users.last_name FROM users JOIN messages ON users.id = messages.receiver WHERE messages.sender = ?');
+    $stmt = $pdo->prepare('SELECT DISTINCT users.id FROM users JOIN messages ON users.id = messages.receiver WHERE messages.sender = ?');
     $stmt->execute([$user]);
     $receivers = $stmt->fetchAll();
-    $stmt = $pdo->prepare('SELECT DISTINCT users.id, users.first_name, users.last_name FROM users JOIN messages ON users.id = messages.sender WHERE messages.receiver = ?');
+    $stmt = $pdo->prepare('SELECT DISTINCT users.id FROM users JOIN messages ON users.id = messages.sender WHERE messages.receiver = ?');
     $stmt->execute([$user]);
     $senders = $stmt->fetchAll();
-    return messages_overview_table([$receivers, $senders]);
+    $diff = array_diff_assoc(array_column($receivers, 'id'), array_column($senders, 'id'));
+    $inter = array_intersect_assoc(array_column($receivers, 'id'), array_column($senders, 'id'));
+    $merge = array_merge($diff, $inter);
+    $names = Array();
+    foreach ($merge as $value) {
+        $stmt = $pdo->prepare('SELECT id, first_name, last_name FROM users WHERE id = ?');
+        $stmt->execute([$value]);
+        $name = $stmt->fetchAll();
+        $names = array_merge($names, $name);
+    }
+    return messages_overview_table($names);
 }
 
-function messages_overview_table ($users_array) {
+function messages_overview_table ($users) {
     $table_exp = '
     <table class="table table-hover">
     <thead
@@ -1076,19 +1086,27 @@ function messages_overview_table ($users_array) {
     </tr>
     </thead>
     <tbody>';
-    foreach ($users_array as $users) {
-        foreach ($users as $user) {
-            $table_exp .= '
+    foreach ($users as $user) {
+        $table_exp .= '
         <tr>
             <td>' . $user['first_name'] . ' ' . $user['last_name'] . '</td>
-            <td><a href="/DDWT21/Final_Project/view_profile/?user_id='.$user['id'].'" role="button" class="btn btn-primary">View profile</a></td>
+            <td><a href="/DDWT21/Final_Project/conversation/?user1='.$user['id'].'&user2='.$_SESSION['user_id'].'" role="button" class="btn btn-primary">View conversation</a></td>
         </tr>
         ';
-        }
     }
     $table_exp .= '
     </tbody>
     </table>
     ';
     return $table_exp;
+}
+
+function get_messages ($pdo, $user1, $user2) {
+    $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
+    $stmt->execute([$user1, $user2]);
+    $user1_sent = $stmt->fetchAll();
+    $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
+    $stmt->execute([$user2, $user1]);
+    $user2_sent = $stmt->fetchAll();
+    return [$user1_sent, $user2_sent];
 }

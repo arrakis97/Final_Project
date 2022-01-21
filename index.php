@@ -741,8 +741,21 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
-    $sender = $_GET['sender'];
-    $receiver = $_GET['receiver'];
+    $user1 = $_GET['user1'];
+    $user2 = $_GET['user2'];
+
+//    p_print(get_messages($db, $user1, $user2));
+
+    /* Page info */
+    $page_title = 'Messages';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Messages' => na('/DDWT21/Final_Project/messages_overview/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 7);
+
+    include use_template('chat_test');
 }
 
 else {
