@@ -191,18 +191,18 @@ function register_user($pdo, $form_data) {
     if (
         empty($form_data['username']) or
         empty($form_data['password']) or
-        empty($form_data['firstname']) or
-        empty($form_data['lastname']) or
+        empty($form_data['first_name']) or
+        empty($form_data['last_name']) or
         empty($form_data['role']) or
         empty($form_data['birthdate']) or
-        empty($form_data['phonenumber']) or
+        empty($form_data['phone_number']) or
         empty($form_data['email']) or
         empty($form_data['language']) or
         empty($form_data['occupation'])
     ) {
         return [
             'type' => 'danger',
-            'message' => 'You should fill in everything'
+            'message' => 'You should fill in everything.'
         ];
     }
 
@@ -236,7 +236,7 @@ function register_user($pdo, $form_data) {
     if (!empty($user_exists)) {
         return [
             'type' => 'danger',
-            'message' => 'The username you entered exists already!'
+            'message' => 'The username you entered exists already.'
         ];
     }
 
@@ -258,11 +258,11 @@ function register_user($pdo, $form_data) {
         $stmt->execute([
             $form_data['username'],
             $password,
-            $form_data['firstname'],
-            $form_data['lastname'],
+            $form_data['first_name'],
+            $form_data['last_name'],
             $form_data['role'],
             $form_data['birthdate'],
-            $form_data['phonenumber'],
+            $form_data['phone_number'],
             $form_data['email'],
             $form_data['language'],
             $form_data['occupation'],
@@ -723,7 +723,7 @@ function update_room($pdo, $room_info) {
     else {
         return [
             'type' => 'danger',
-            'message' => 'The room was not updated.'
+            'message' => 'Something went wrong. The room was not updated.'
         ];
     }
 }
@@ -974,4 +974,68 @@ function get_profile_info ($pdo, $user_id) {
         $user_info_exp[$key] = htmlspecialchars($value);
     }
     return $user_info_exp;
+}
+
+function update_profile($pdo, $user_info) {
+    /* Check if all fields are set */
+    if (
+        empty($user_info['first_name']) or
+        empty($user_info['last_name']) or
+        empty($user_info['phone_number']) or
+        empty($user_info['email']) or
+        empty($user_info['language']) or
+        empty($user_info['occupation']) or
+        empty($user_info['user_id'])
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'You should fill in everything'
+        ];
+    }
+    /* Get current email */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+    $stmt->execute([$user_info['user_id']]);
+    $users = $stmt->fetch();
+    $current_email = $users['email'];
+
+    /* Check if email is already in use */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+    $stmt->execute([$user_info['email']]);
+    $users = $stmt->fetch();
+    if ($user_info['email'] == $users['email'] and $users['email'] != $current_email) {
+        return [
+            'type' => 'danger',
+            'message' => 'This email is in use already.'
+        ];
+    }
+
+    /* Update profile */
+    $stmt = $pdo->prepare('UPDATE users SET first_name = ?, last_name = ?, phone_number = ?, email = ?, language = ?, occupation = ?, biography = ? WHERE id = ?');
+    $stmt->execute([
+        $user_info['first_name'],
+        $user_info['last_name'],
+        $user_info['phone_number'],
+        $user_info['email'],
+        $user_info['language'],
+        $user_info['occupation'],
+        $user_info['biography'],
+        $user_info['user_id']
+    ]);
+    $updated = $stmt->rowCount();
+    if ($updated == 1) {
+        return [
+            'type' => 'success',
+            'message' => 'Your profile was successfully updated.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong. Your profile was not updated.'
+        ];
+    }
+}
+
+function remove_profile ($pdo, $user_id) {
+
 }

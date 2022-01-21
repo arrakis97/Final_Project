@@ -648,7 +648,7 @@ elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'get')) {
     $page_title = 'Edit your profile';
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
-        'Profile of ' . $user_info['first_name'] . ' ' . $user_info['last_name'] => na('/DDWT21/Final_Project/edit_profile/?user_id='.$user_profile, True)
+        'Edit profile of ' . $user_info['first_name'] . ' ' . $user_info['last_name'] => na('/DDWT21/Final_Project/edit_profile/?user_id='.$user_profile, True)
     ]);
 
     /* Check which page is the active page */
@@ -667,6 +667,26 @@ elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'get')) {
 
     /* Choose template */
     include use_template('register');
+}
+
+/* Edit profile POST */
+elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Edit profile */
+    $feedback = update_profile($db, $_POST);
+    $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'danger') {
+        redirect(sprintf('/DDWT21/Final_Project/edit_profile/?error_msg=%s&user_id=%s', json_encode($feedback), $_POST['user_id']));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/view_profile/?error_msg=%s&user_id=%s', json_encode($feedback), $_POST['user_id']));
+    }
 }
 
 else {

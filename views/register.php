@@ -55,13 +55,13 @@
                     <label for="inputFirstName">
                         First name
                     </label>
-                    <input type="text" class="form-control" id="inputFirstName" placeholder="Enter your first name" name="firstname" value="<?php if (isset($user_info['first_name'])) {echo $user_info['first_name'];} ?>" required>
+                    <input type="text" class="form-control" id="inputFirstName" placeholder="Enter your first name" name="first_name" value="<?php if (isset($user_info['first_name'])) {echo $user_info['first_name'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputLastName">
                         Last name
                     </label>
-                    <input type="text" class="form-control" id="inputLastName" placeholder="Enter your last name" name="lastname" value="<?php if (isset($user_info['last_name'])) {echo $user_info['last_name'];} ?>" required>
+                    <input type="text" class="form-control" id="inputLastName" placeholder="Enter your last name" name="last_name" value="<?php if (isset($user_info['last_name'])) {echo $user_info['last_name'];} ?>" required>
                 </div>
                 <?php if ($form_action == '/DDWT21/Final_Project/register/') { ?>
                     <div class="form-group row">
@@ -91,7 +91,7 @@
                     <label for="inputPhone">
                         Phone number
                     </label>
-                    <input type="text" class="form-control" id="inputPhone" placeholder="0612345678" name="phonenumber" value="<?php if (isset($user_info['phone_number'])) {echo $user_info['phone_number'];} ?>" required>
+                    <input type="text" class="form-control" id="inputPhone" placeholder="0612345678" name="phone_number" value="<?php if (isset($user_info['phone_number'])) {echo $user_info['phone_number'];} ?>" required>
                 </div>
                 <div class="form-group row">
                     <label for="inputEmail">
@@ -127,6 +127,7 @@
                     </label>
                     <textarea class="form-control" id="biography" rows="3" placeholder="Here you can tell something about yourself" name="biography"><?php if (isset($user_info['biography'])) {echo $user_info['biography'];} ?></textarea>
                 </div>
+                <?php if (isset($current_user)) { ?><input type="hidden" name="user_id" value="<?php echo $current_user ?>"><?php } ?>
                 <button type="submit" class="btn btn-warning"><?= $submit_button ?></button>
             </form>
 
