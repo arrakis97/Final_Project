@@ -58,7 +58,7 @@
                     Profile
                 </div>
                 <div class="card-body">
-                    <p>Click the button below to view and edit your profile.</p>
+                    <p>Click the button below to view, edit or remove your profile.</p>
                     <a href="/DDWT21/Final_Project/view_profile/?user_id=<?= $user_id ?>" class="btn btn-primary">View/edit profile</a>
                 </div>
             </div>
