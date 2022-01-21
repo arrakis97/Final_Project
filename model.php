@@ -898,7 +898,7 @@ function get_users_table ($users) {
     </tr>
     </thead>
     <tbody>';
-    foreach($users as $user) {
+    foreach ($users as $user) {
         $table_exp .= '
         <tr>
             <td>' . $user['first_name'] . ' ' . $user['last_name'] . '</td>
@@ -1054,4 +1054,41 @@ function remove_profile ($pdo, $user_id) {
             'message' => 'Something went wrong. Your profile was not deleted.'
         ];
     }
+}
+
+function inbox ($pdo, $user) {
+    $stmt = $pdo->prepare('SELECT DISTINCT users.id, users.first_name, users.last_name FROM users JOIN messages ON users.id = messages.receiver WHERE messages.sender = ?');
+    $stmt->execute([$user]);
+    $receivers = $stmt->fetchAll();
+    $stmt = $pdo->prepare('SELECT DISTINCT users.id, users.first_name, users.last_name FROM users JOIN messages ON users.id = messages.sender WHERE messages.receiver = ?');
+    $stmt->execute([$user]);
+    $senders = $stmt->fetchAll();
+    return messages_overview_table([$receivers, $senders]);
+}
+
+function messages_overview_table ($users_array) {
+    $table_exp = '
+    <table class="table table-hover">
+    <thead
+    <tr>
+        <th scope="col">User</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>';
+    foreach ($users_array as $users) {
+        foreach ($users as $user) {
+            $table_exp .= '
+        <tr>
+            <td>' . $user['first_name'] . ' ' . $user['last_name'] . '</td>
+            <td><a href="/DDWT21/Final_Project/view_profile/?user_id='.$user['id'].'" role="button" class="btn btn-primary">View profile</a></td>
+        </tr>
+        ';
+        }
+    }
+    $table_exp .= '
+    </tbody>
+    </table>
+    ';
+    return $table_exp;
 }

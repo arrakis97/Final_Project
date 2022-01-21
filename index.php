@@ -38,6 +38,10 @@ $navigation_array = Array (
     6 => Array (
         'name' => 'View rooms',
         'url' => '/DDWT21/Final_Project/view_rooms/'
+    ),
+    7 => Array (
+        'name' => 'Messages',
+        'url' => '/DDWT21/Final_Project/messages_overview/'
     )
 );
 
@@ -694,6 +698,51 @@ elseif (new_route('/DDWT21/Final_Project/remove_profile/', 'post')) {
     else {
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
+}
+
+/* Messages overview GET */
+elseif (new_route('/DDWT21/Final_Project/messages_overview/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Page info */
+    $page_title = 'Messages';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Messages' => na('/DDWT21/Final_Project/messages_overview/', True)
+    ]);
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 7);
+
+    /* Page content */
+    $page_subtitle = 'The overview of all available rooms';
+    $page_content = 'Here you can find all rooms available on Kamernet 2.0';
+    $messages_overview = inbox($db, $_SESSION['user_id']);
+    if (empty($messages_overview)) {
+        $left_content = '<b>You have not started any conversations yet</b>';
+    }
+    else {
+        $left_content = $messages_overview;
+    }
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    include use_template('main');
+}
+
+/* View single conversation GET */
+elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+    $sender = $_GET['sender'];
+    $receiver = $_GET['receiver'];
 }
 
 else {
