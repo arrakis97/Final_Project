@@ -459,7 +459,6 @@ elseif (new_route('/DDWT21/Final_Project/opt-out/', 'post')) {
     }
 }
 
-
 /* Check opt-ins for tenant GET */
 elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     /* Check if logged in */
@@ -686,6 +685,29 @@ elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'post')) {
     }
     else {
         redirect(sprintf('/DDWT21/Final_Project/view_profile/?error_msg=%s&user_id=%s', json_encode($feedback), $_POST['user_id']));
+    }
+}
+
+/* Remove profile POST */
+elseif (new_route('/DDWT21/Final_Project/remove_profile/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Get user id */
+    $user_id = $_POST['user_id'];
+
+    /* Delete profile */
+    $feedback = remove_profile($db, $user_id);
+    $error_msg = get_error($feedback);
+
+    /* Redirect to the correct page with an error or success message */
+    if ($feedback['type'] == 'success') {
+        redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
+    }
+    else {
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 }
 

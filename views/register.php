@@ -128,7 +128,12 @@
                     <textarea class="form-control" id="biography" rows="3" placeholder="Here you can tell something about yourself" name="biography"><?php if (isset($user_info['biography'])) {echo $user_info['biography'];} ?></textarea>
                 </div>
                 <?php if (isset($current_user)) { ?><input type="hidden" name="user_id" value="<?php echo $current_user ?>"><?php } ?>
-                <button type="submit" class="btn btn-warning"><?= $submit_button ?></button>
+                <?php if ($form_action == '/DDWT21/Final_Project/register/') { ?>
+                    <button type="submit" class="btn btn-primary"><?= $submit_button ?></button>
+                <?php } ?>
+                <?php if ($form_action == '/DDWT21/Final_Project/edit_profile/') { ?>
+                    <button type="submit" class="btn btn-warning"><?= $submit_button ?></button>
+                <?php } ?>
             </form>
 
         </div>

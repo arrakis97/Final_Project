@@ -1037,5 +1037,21 @@ function update_profile($pdo, $user_info) {
 }
 
 function remove_profile ($pdo, $user_id) {
-
+    /* Delete profile */
+    $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $deleted = $stmt->rowCount();
+    if ($deleted == 1) {
+        logout_user();
+        return [
+            'type' => 'success',
+            'message' => 'Your profile was deleted.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong. Your profile was not deleted.'
+        ];
+    }
 }
