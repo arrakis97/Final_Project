@@ -68,11 +68,11 @@
             <?php if ($display_buttons) { ?>
                 <div class="row">
                     <div class="col-sm-2">
-                        <a href="/DDWT21/Final_Project/edit/?room_id=<?= $room_id ?>" role="button" class="btn btn-warning">Edit</a>
+                        <a href="/DDWT21/Final_Project/edit_profile/?user_id=<?= $user_profile ?>" role="button" class="btn btn-warning">Edit</a>
                     </div>
                     <div class="col-sm-2">
-                        <form action="/DDWT21/Final_Project/remove/" method="POST">
-                            <input type="hidden" value="<?= $room_id ?>" name="room_id">
+                        <form action="/DDWT21/Final_Project/remove_profile/" method="POST">
+                            <input type="hidden" value="<?= $user_profile ?>" name="user_id">
                             <button type="submit" class="btn btn-danger">Remove</button>
                         </form>
                     </div>

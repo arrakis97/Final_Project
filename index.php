@@ -77,6 +77,9 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
 
     /* Page content */
     $page_subtitle = 'The online platform to find a room';
+    $page_content = 'Here you can register for Kamernet 2.0';
+    $submit_button = 'Register now';
+    $form_action = '/DDWT21/Final_Project/register/';
 
     if (isset($_GET['error_msg'])) {
         $error_msg = get_error($_GET['error_msg']);
@@ -330,7 +333,7 @@ elseif (new_route('/DDWT21/Final_Project/room/', 'get')) {
 }
 
 /* Edit room GET */
-elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
+elseif (new_route('/DDWT21/Final_Project/edit_room/', 'get')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -352,7 +355,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
     $page_title = 'Edit your room';
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
-        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/edit/?room_id='.$room_id, True)
+        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/edit_room/?room_id='.$room_id, True)
     ]);
 
     /* Check which page is the active page */
@@ -362,7 +365,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
     $page_subtitle = 'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'];
     $page_content = 'Edit the room below';
     $submit_button = 'Edit room';
-    $form_action = '/DDWT21/Final_Project/edit/';
+    $form_action = '/DDWT21/Final_Project/edit_room/';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -374,7 +377,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'get')) {
 }
 
 /* Edit room POST */
-elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
+elseif (new_route('/DDWT21/Final_Project/edit_room/', 'post')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -386,7 +389,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
 
     /* Redirect to the correct page with an error or success message */
     if ($feedback['type'] == 'danger') {
-        redirect(sprintf('/DDWT21/Final_Project/edit/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
+        redirect(sprintf('/DDWT21/Final_Project/edit_room/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
     }
     else {
         redirect(sprintf('/DDWT21/Final_Project/room/?error_msg=%s&room_id=%s', json_encode($feedback), $_POST['room_id']));
@@ -397,7 +400,7 @@ elseif (new_route('/DDWT21/Final_Project/edit/', 'post')) {
 }
 
 /* Remove room POST */
-elseif (new_route('/DDWT21/Final_Project/remove/', 'post')) {
+elseif (new_route('/DDWT21/Final_Project/remove_room/', 'post')) {
     /* Check if logged in */
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
@@ -619,6 +622,51 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
 
     /* Choose template */
     include use_template('single_profile');
+}
+
+/* Edit profile GET */
+elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'get')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    /* Check if the one trying to edit the room is the owner of the profile */
+    $current_user = $_SESSION['user_id'];
+    $user_profile = $_GET['user_id'];
+    if ($current_user != $user_profile) {
+        $display_buttons = False;
+        $feedback = ['type' => 'danger', 'message' => 'You are not allowed to edit the user profile of others.'];
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
+    $display_buttons = True;
+
+    /* Get profile info from database */
+    $user_info = get_profile_info($db, $user_profile);
+
+    /* Page info */
+    $page_title = 'Edit your profile';
+    $breadcrumbs = get_breadcrumbs([
+        'Home' => na('/DDWT21/Final_Project/', False),
+        'Profile of ' . $user_info['first_name'] . ' ' . $user_info['last_name'] => na('/DDWT21/Final_Project/edit_profile/?user_id='.$user_profile, True)
+    ]);
+
+    /* Check which page is the active page */
+    $navigation = get_navigation($navigation_array, 0);
+
+    /* Page content */
+    $page_subtitle = $user_info['first_name'] . ' ' . $user_info['last_name'] . ', here you can edit your own profile';
+    $page_content = 'Edit the profile below';
+    $submit_button = 'Edit profile';
+    $form_action = '/DDWT21/Final_Project/edit_profile/';
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    /* Choose template */
+    include use_template('register');
 }
 
 else {

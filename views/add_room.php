@@ -178,9 +178,7 @@
                     <div class="form-group row">
                         <div class="col-sm-10">
                             <input type="hidden" id="owner" name="owner" value="<?= $_SESSION['user_id'] ?>">
-                            <button type="submit" class="btn btn-primary">
-                                <?= $submit_button ?>
-                            </button>
+                            <button type="submit" class="btn btn-primary"><?= $submit_button ?></button>
                         </div>
                     </div>
                 <?php } ?>
