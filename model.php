@@ -1110,5 +1110,116 @@ function get_messages ($pdo, $user1, $user2) {
     $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
     $stmt->execute([$user2, $user1]);
     $user2_sent = $stmt->fetchAll();
-    return [$user1_sent, $user2_sent];
+    $messages = Array();
+    $i = 0;
+    foreach ($user1_sent as $message) {
+        $messages[$i] = $message;
+        $i++;
+    }
+    foreach ($user2_sent as $message) {
+        $messages[$i] = $message;
+        $i++;
+    }
+    usort($messages, function ($a, $b) {
+        return $a['date_time'] > $b['date_time'];
+    });
+    return $messages;
+}
+
+function conversation_table ($pdo, $user1, $user2) {
+    if ($_SESSION['user_id'] == $user1) {
+        $active_user = $user1;
+        $inactive_user = $user2;
+    }
+    else {
+        $active_user = $user2;
+        $inactive_user = $user1;
+    }
+    $inactive_user_name = display_user($pdo, $inactive_user);
+    $messages = get_messages($pdo, $user1, $user2);
+    if (empty($messages)) {
+        return '<b>You have not yet started a conversation with this person. Send a message to get started.</b>';
+    }
+    $messages_table = '';
+    foreach ($messages as $message) {
+        $date = strtotime($message['date_time']);
+        if ($message['sender'] == $active_user) {
+            $messages_table .= '
+            <div class="chat-message-right mb-4">
+                <div>
+                    <div class="text-muted small text-nowrap pr-1">
+                        '.date('d/m/Y', $date).'
+                    </div>
+                    <div class="text-muted small text-nowrap p-3">
+                        '.date('H:i', $date).'
+                    </div>
+                </div>
+                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                    <div class="font-weight-bold mb-1">
+                        You
+                    </div>
+                    '.$message['content'].'
+                </div>
+            </div>
+            ';
+        }
+        else {
+            $messages_table .= '
+            <div class="chat-message-left pb-4">
+                <div>
+                    <div class="text-muted small text-nowrap pr-3">
+                        '.date('d/m/Y', $date).'
+                    </div>
+                    <div class="text-muted small text-nowrap p-3">
+                        '.date('H:i', $date).'
+                    </div>
+                </div>
+                <div class="flex-shrink-1 bg-info rounded py-2 px-3 mr-3">
+                    <div class="font-weight-bold mb-1">
+                        '.$inactive_user_name['first_name'].'
+                    </div>
+                    '.$message['content'].'
+                </div>
+            </div>
+            ';
+        }
+    }
+
+    return $messages_table;
+}
+
+function send_message($pdo, $message) {
+    /* Check if all fields are set */
+    if (
+        empty($message['content']) or
+        empty($message['sender']) or
+        empty($message['receiver'])
+    ) {
+        return [
+            'type' => 'danger',
+            'message' => 'Not all fields were filled in.'
+        ];
+    }
+
+    /* Save message to database */
+    $stmt = $pdo->prepare('INSERT INTO messages (sender, receiver, content) VALUES (?, ?, ?)');
+    $stmt->execute([
+        $message['sender'],
+        $message['receiver'],
+        $message['content']
+    ]);
+    $inserted = $stmt->rowCount();
+
+    if ($inserted == 1) {
+        return [
+            'type' => 'success',
+            'message' => 'You successfully send your message.'
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Your message could not be send. Please try again.'
+        ];
+    }
 }

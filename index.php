@@ -743,10 +743,22 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
+
     $user1 = $_GET['user1'];
     $user2 = $_GET['user2'];
+    $current_user = $_SESSION['user_id'];
+    if ($current_user != $user1 AND $current_user != $user2) {
+        $feedback = ['type' => 'danger', 'message' => 'You are not a participator in this conversation.'];
+        redirect(sprintf('/DDWT21/Final_Project/messages_overview/?error_msg=%s', json_encode($feedback)));
+    }
 
-//    p_print(get_messages($db, $user1, $user2));
+    if ($_SESSION['user_id'] == $user1) {
+        $inactive_user = $user2;
+    }
+    else {
+        $inactive_user = $user1;
+    }
+    $inactive_user_name = display_user($db, $inactive_user);
 
     /* Page info */
     $page_title = 'Messages';
@@ -757,7 +769,27 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 7);
 
-    include use_template('chat_test');
+    $messages_table = conversation_table($db, $user1, $user2);
+
+    /* Check if an error message is set and display it if available */
+    if (isset($_GET['error_msg'])) {
+        $error_msg = get_error($_GET['error_msg']);
+    }
+
+    include use_template('chat');
+}
+
+/* Send message POST */
+elseif (new_route('/DDWT21/Final_Project/send_message/', 'post')) {
+    /* Check if logged in */
+    if (!check_login()) {
+        redirect('/DDWT21/Final_Project/login/');
+    }
+
+    $feedback = send_message($db, $_POST);
+    $error_msg = get_error($feedback);
+
+    redirect(sprintf('/DDWT21/Final_Project/conversation/?error_msg=%s&user1=%s&user2=%s', json_encode($feedback), $_POST['sender'], $_POST['receiver']));
 }
 
 else {
