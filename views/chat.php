@@ -51,8 +51,8 @@
                                 <input type="text" class="form-control" placeholder="Type your message" name="content" required>
                                 <input type="hidden" name="sender" value="<?php echo $current_user ?>">
                                 <input type="hidden" name="receiver" value="<?php echo $inactive_user ?>"
-                                <div class="button-container" style="padding-left: 10px">
-                                    <button type="submit" class="btn btn-primary">Send message</button>
+                                <div class="button-container">
+                                    <button type="submit" class="btn btn-primary" style="margin-left: 10px">Send message</button>
                                 </div>
                             </div>
                         </div>
