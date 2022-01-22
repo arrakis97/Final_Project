@@ -764,7 +764,8 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     $page_title = 'Messages';
     $breadcrumbs = get_breadcrumbs([
         'Home' => na('/DDWT21/Final_Project/', False),
-        'Messages' => na('/DDWT21/Final_Project/messages_overview/', True)
+        'Messages' => na('/DDWT21/Final_Project/messages_overview/', False),
+        'Conversation with ' .$inactive_user_name['first_name'] => na('/DDWT21/Final_Project/conversation/?user1='.$user1.'&user2='.$user2, True)
     ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 7);
