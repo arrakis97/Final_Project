@@ -895,6 +895,7 @@ function get_users_table ($users) {
     <tr>
         <th scope="col">Tenant</th>
         <th scope="col"></th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>';
@@ -903,6 +904,7 @@ function get_users_table ($users) {
         <tr>
             <td>' . $user['first_name'] . ' ' . $user['last_name'] . '</td>
             <td><a href="/DDWT21/Final_Project/view_profile/?user_id='.$user['id'].'" role="button" class="btn btn-primary">View profile</a></td>
+            <td><a href="/DDWT21/Final_Project/conversation/?user1='.$_SESSION['user_id'].'&user2='.$user['id'].'" role="button" class="btn btn-primary">Send message</a></td>
         </tr>
         ';
     }

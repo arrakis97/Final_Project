@@ -568,6 +568,7 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
                     $feedback = ['type' => 'danger', 'message' => 'You are not opted in to one of these owner\'s room and cannot see their profile.'];
                     redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
                 }
+                $send_message = True;
             }
         }
         else {
@@ -580,6 +581,7 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
                     $feedback = ['type' => 'danger', 'message' => 'This tenant has not opted in to one of your rooms and you cannot see their profile.'];
                     redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
                 }
+                $send_message = True;
             }
         }
     }

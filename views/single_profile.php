@@ -83,13 +83,14 @@
 
         <!-- Right column -->
         <div class="col-md-4">
-            <?php if ($current_user != $user_profile) { ?>
+            <?php if ($current_user != $user_profile and $send_message) { ?>
             <div class="card">
                 <div class="card-header">
-                    Sent message
+                    Send message
                 </div>
                 <div class="card-body">
                     <p>Click the button below to send this user a message.</p>
+                    <a href="/DDWT21/Final_Project/conversation/?user1=<?= $current_user ?>&user2=<?= $user_profile ?>" role="button" class="btn btn-primary">Send message</a>
                 </div>
             </div>
             <?php } ?>
