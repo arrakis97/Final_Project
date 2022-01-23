@@ -138,14 +138,22 @@ function display_user($pdo, $user_id) {
     $stmt = $pdo->prepare('SELECT first_name, last_name FROM users WHERE id = ?');
     $stmt->execute([$user_id]);
     $user_name = $stmt->fetch();
-    return $user_name;
+    $user_name_exp = Array();
+    foreach ($user_name as $key => $value) {
+        $user_name_exp[$key] = htmlspecialchars($value);
+    }
+    return $user_name_exp;
 }
 
 function display_role($pdo, $user_id) {
     $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
     $stmt->execute([$user_id]);
     $user_role = $stmt->fetch();
-    return $user_role['role'];
+    $user_role_exp = Array ();
+    foreach ($user_role as $key => $value) {
+        $user_role_exp[$key] = htmlspecialchars($value);
+    }
+    return $user_role_exp['role'];
 }
 
 /**
@@ -174,31 +182,15 @@ function register_user($pdo, $form_data) {
         ];
     }
 
-    /* Check if user already exists */
-    try {
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
-        $stmt->execute([$form_data['username']]);
-        $user_exists = $stmt->rowCount();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error: %s', $e->getMessage())
-        ];
-    }
+    /* Check if user exists already */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+    $stmt->execute([$form_data['username']]);
+    $user_exists = $stmt->rowCount();
 
-    /* Check if e-mail is already in use */
-    try {
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-        $stmt->execute([$form_data['email']]);
-        $email_exists = $stmt->rowCount();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error: %s', $e->getMessage())
-        ];
-    }
+    /* Check if e-mail exists already */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+    $stmt->execute([$form_data['email']]);
+    $email_exists = $stmt->rowCount();
 
     /* Return error message for existing username */
     if (!empty($user_exists)) {
@@ -220,38 +212,39 @@ function register_user($pdo, $form_data) {
     $password = password_hash($form_data['password'], PASSWORD_DEFAULT);
 
     /* Save user to the database */
-    try {
-        $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, 
+    $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, 
                    email, language, occupation, biography) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([
-            $form_data['username'],
-            $password,
-            $form_data['first_name'],
-            $form_data['last_name'],
-            $form_data['role'],
-            $form_data['birthdate'],
-            $form_data['phone_number'],
-            $form_data['email'],
-            $form_data['language'],
-            $form_data['occupation'],
-            $form_data['biography']
-        ]);
-        $user_id = $pdo->lastInsertId();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error: %s', $e->getMessage())
-        ];
-    }
+    $stmt->execute([
+        $form_data['username'],
+        $password,
+        $form_data['first_name'],
+        $form_data['last_name'],
+        $form_data['role'],
+        $form_data['birthdate'],
+        $form_data['phone_number'],
+        $form_data['email'],
+        $form_data['language'],
+        $form_data['occupation'],
+        $form_data['biography']
+    ]);
+    $inserted = $stmt->rowCount();
+    $user_id = $pdo->lastInsertId();
 
     /* Login user */
-    session_start();
-    $_SESSION['user_id'] = $user_id;
-    return [
-        'type' => 'success',
-        'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['first_name'])
-    ];
+    if ($inserted == 1) {
+        session_start();
+        $_SESSION['user_id'] = $user_id;
+        return [
+            'type' => 'success',
+            'message' => sprintf('%s, your account was successfully created!', display_user($pdo, $_SESSION['user_id'])['first_name'])
+        ];
+    }
+    else {
+        return [
+            'type' => 'danger',
+            'message' => 'Something went wrong. Your account was not created.'
+        ];
+    }
 }
 
 /**
@@ -404,22 +397,15 @@ function add_room ($pdo, $room_info) {
     }
 
     /* Check if room exists already */
-    try {
-        $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
-        $stmt->execute([
-            $room_info['city'],
-            $room_info['street_name'],
-            $room_info['house_number'],
-            $room_info['addition']
-        ]);
-        $room = $stmt->rowCount();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error: %s', $e->getMessage())
-        ];
-    }
+    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
+    $stmt->execute([
+        $room_info['city'],
+        $room_info['street_name'],
+        $room_info['house_number'],
+        $room_info['addition']
+    ]);
+    $room = $stmt->rowCount();
+
     if (!empty($room)) {
         return [
             'type' => 'danger',
@@ -428,34 +414,26 @@ function add_room ($pdo, $room_info) {
     }
 
     /* Save room to database */
-    try {
-        $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, including_utilities, 
+    $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, including_utilities, 
                    shared_kitchen, shared_bathroom, nr_roommates, nr_rooms, general_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([
-            $room_info['owner'],
-            $room_info['city'],
-            $room_info['street_name'],
-            $room_info['house_number'],
-            $room_info['addition'],
-            $room_info['type'],
-            $room_info['size'],
-            $room_info['price'],
-            $room_info['rent_allowance'],
-            $room_info['including_utilities'],
-            $room_info['shared_kitchen'],
-            $room_info['shared_bathroom'],
-            $room_info['nr_roommates'],
-            $room_info['nr_rooms'],
-            $room_info['general_info']
-        ]);
-        $inserted = $stmt->rowCount();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error: %s', $e->getMessage())
-        ];
-    }
+    $stmt->execute([
+        $room_info['owner'],
+        $room_info['city'],
+        $room_info['street_name'],
+        $room_info['house_number'],
+        $room_info['addition'],
+        $room_info['type'],
+        $room_info['size'],
+        $room_info['price'],
+        $room_info['rent_allowance'],
+        $room_info['including_utilities'],
+        $room_info['shared_kitchen'],
+        $room_info['shared_bathroom'],
+        $room_info['nr_roommates'],
+        $room_info['nr_rooms'],
+        $room_info['general_info']
+    ]);
+    $inserted = $stmt->rowCount();
 
     if ($inserted == 1) {
         return [
@@ -642,9 +620,7 @@ function update_room($pdo, $room_info) {
     ]);
     $rooms = $stmt->fetch();
 
-    if (
-        $room_info_array === $rooms and $room_info !== $current_address
-    ) {
+    if ($room_info_array === $rooms and $room_info !== $current_address) {
         return [
             'type' => 'danger',
             'message' => 'There already exists a room at this address.'
@@ -816,10 +792,22 @@ function opt_out ($pdo, $room, $user) {
     }
 }
 
-function tenant_opt_in_table ($pdo, $user) {
+function tenant_opt_ins ($pdo, $user) {
     $stmt = $pdo->prepare('SELECT id, owner, city, street_name, house_number, addition FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
     $stmt->execute([$user]);
     $rooms = $stmt->fetchAll();
+    $rooms_exp = Array();
+
+    foreach ($rooms as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
+    return $rooms_exp;
+}
+
+function tenant_opt_in_table ($pdo, $user) {
+    $rooms = tenant_opt_ins($pdo, $user);
     $table_exp = '
     <table class="table table-hover">
     <thead
@@ -902,6 +890,13 @@ function check_room_interest ($pdo, $room) {
     }
 }
 
+/**
+ * Check if a tenant has opted in to one of the owner's rooms from the owner's perspective
+ * @param $pdo
+ * @param $owner
+ * @param $tenant
+ * @return bool
+ */
 function check_owner_tenant ($pdo, $owner, $tenant) {
     $stmt = $pdo->prepare('SELECT rooms.owner FROM rooms JOIN opt_in ON rooms.id = opt_in.room JOIN users ON opt_in.user = users.id WHERE users.id = ?');
     $stmt->execute([$tenant]);
@@ -914,6 +909,13 @@ function check_owner_tenant ($pdo, $owner, $tenant) {
     return False;
 }
 
+/**
+ * Check if the tenant has opted in to one of the owner's rooms from the tenant's perspective
+ * @param $pdo
+ * @param $owner
+ * @param $tenant
+ * @return bool
+ */
 function check_tenant_owner($pdo, $owner, $tenant) {
     $stmt = $pdo->prepare('SELECT users.id FROM users JOIN opt_in ON users.id = opt_in.user JOIN rooms ON opt_in.room = rooms.id WHERE rooms.owner = ?');
     $stmt->execute([$owner]);
@@ -1033,7 +1035,13 @@ function inbox ($pdo, $user) {
         $stmt = $pdo->prepare('SELECT id, first_name, last_name FROM users WHERE id = ?');
         $stmt->execute([$value]);
         $name = $stmt->fetchAll();
-        $names = array_merge($names, $name);
+        $name_exp = Array();
+        foreach ($name as $key => $name_value) {
+            foreach ($name_value as $user_key => $user_input) {
+                $name_exp[$key][$user_key] = htmlspecialchars($user_input);
+            }
+        }
+        $names = array_merge($names, $name_exp);
     }
     return messages_overview_table($names);
 }
@@ -1067,16 +1075,28 @@ function get_messages ($pdo, $user1, $user2) {
     $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
     $stmt->execute([$user1, $user2]);
     $user1_sent = $stmt->fetchAll();
+    $user1_sent_exp = Array();
+    foreach ($user1_sent as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $user1_sent_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
     $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
     $stmt->execute([$user2, $user1]);
     $user2_sent = $stmt->fetchAll();
+    $user2_sent_exp = Array();
+    foreach ($user2_sent as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $user2_sent_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
     $messages = Array();
     $i = 0;
-    foreach ($user1_sent as $message) {
+    foreach ($user1_sent_exp as $message) {
         $messages[$i] = $message;
         $i++;
     }
-    foreach ($user2_sent as $message) {
+    foreach ($user2_sent_exp as $message) {
         $messages[$i] = $message;
         $i++;
     }

@@ -120,7 +120,6 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     $page_subtitle = 'Your account';
     $page_content = 'Here you can see information about your account';
     $user = display_user($db, $user_id)['first_name'];
-    $role = display_role($db, $user_id);
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -139,7 +138,7 @@ elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
     $navigation = get_navigation($navigation_array, 4);
 
     /* Page content */
-    $page_subtitle = 'Login to you Series Overview account';
+    $page_subtitle = 'Login to you Kamernet 2.0 account';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -195,7 +194,6 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
 
     /* Page content */
     $page_subtitle = 'Here you can add a room';
-    $page_content = display_role($db, $_SESSION['user_id']);
     $submit_button = 'Add your room';
     $form_action = '/DDWT21/Final_Project/add_room/';
 
@@ -224,7 +222,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'post')) {
         redirect(sprintf('/DDWT21/Final_Project/add_room/?error_msg=%s', json_encode($feedback)));
     }
     else {
-        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+        redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
     }
 
     /* Choose template */
@@ -368,8 +366,15 @@ elseif (new_route('/DDWT21/Final_Project/remove_room/', 'post')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
-    /* Get room id */
+    /* Get room info */
     $room_id = $_POST['room_id'];
+    $room_info = get_room_info($db, $room_id);
+
+    /* Check if currently active user is owner of the room */
+    if ($_SESSION['user_id'] != $room_info['owner']) {
+        $feedback = ['type' => 'danger', 'message' => 'You are not the owner of this room.'];
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
 
     /* Remove room from database */
     $feedback = remove_room($db, $room_id);
@@ -377,8 +382,6 @@ elseif (new_route('/DDWT21/Final_Project/remove_room/', 'post')) {
 
     /* Redirect to the correct page with an error or success message */
     redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
-
-    include use_template('main');
 }
 
 /* Opt-in to room POST */
@@ -641,6 +644,11 @@ elseif (new_route('/DDWT21/Final_Project/remove_profile/', 'post')) {
     /* Get user id */
     $user_id = $_POST['user_id'];
 
+    if ($_SESSION['user_id'] != $user_id) {
+        $feedback = ['type' => 'danger', 'message' => 'You are not the owner of this profile.'];
+        redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
+    }
+
     /* Delete profile */
     $feedback = remove_profile($db, $user_id);
     $error_msg = get_error($feedback);
@@ -668,9 +676,10 @@ elseif (new_route('/DDWT21/Final_Project/messages_overview/', 'get')) {
     $navigation = get_navigation($navigation_array, 7);
 
     /* Page content */
-    $page_subtitle = 'The overview of all available rooms';
-    $page_content = 'Here you can find all rooms available on Kamernet 2.0';
+    $page_subtitle = 'The overview of all people you have messaged with';
+    $page_content = 'Click on the \'View conversation\' button to see more';
     $messages_overview = inbox($db, $_SESSION['user_id']);
+
     if (empty($messages_overview)) {
         $left_content = '<b>You have not started any conversations yet</b>';
     }
