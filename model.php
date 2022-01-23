@@ -624,7 +624,7 @@ function update_room($pdo, $room_info) {
     ]);
     $rooms = $stmt->fetch();
 
-    if ($room_info_array === $rooms and $room_info !== $current_address) {
+    if ($room_info_array === $rooms and $rooms !== $current_address) {
         return [
             'type' => 'danger',
             'message' => 'There already exists a room at this address.'
