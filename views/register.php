@@ -66,25 +66,28 @@
                     </label>
                     <input type="text" class="form-control" id="inputDate" placeholder="yyyy-mm-dd" name="birthdate" value="<?php if (isset($user_info['birthdate'])) {echo $user_info['birthdate'];} ?>" required>
                 </div>
-                <div class="col-md-3 py-3">
+                <div class="col-md-3">
                     <label for="inputPhone" class="form-label">
                         Phone number
                     </label>
                     <input type="text" class="form-control" id="inputPhone" placeholder="0612345678" name="phone_number" value="<?php if (isset($user_info['phone_number'])) {echo $user_info['phone_number'];} ?>" required>
                 </div>
-                <div class="col-md-4 py-3">
+                <div class="col-md-4">
                     <label for="inputEmail" class="form-label">
                         E-mail
                     </label>
-                    <input type="text" class="form-control" id="inputEmail" placeholder="example@example.com" name="email" value="<?php if (isset($user_info['email'])) {echo $user_info['email'];} ?>" required>
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <input type="text" class="form-control" id="inputEmail" placeholder="example@example.com" name="email" value="<?php if (isset($user_info['email'])) {echo $user_info['email'];} ?>" required>
+                    </div>
                 </div>
-                <div class="col-md-5 py-3">
+                <div class="col-md-5">
                     <label for="occupation">
                         State your occupation (e.g. studies/profession)
                     </label>
                     <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" value="<?php if (isset($user_info['occupation'])) {echo $user_info['occupation'];} ?>" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 py-3">
                     <label for="language" class="form-label">
                         Select your language
                     </label>
@@ -100,7 +103,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 py-3">
                     <label for="role" class="form-label">
                         Owner or tenant
                     </label>
@@ -116,7 +119,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-12  py-3">
+                <div class="col-md-12" style="padding-bottom: 10px">
                     <label for="biography">
                         Biography
                     </label>
