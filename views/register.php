@@ -40,7 +40,7 @@
                     <label for="inputUsername" class="form-label">
                         Username
                     </label>
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter a username" name="username" value="" required>
+                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter a username" name="username"  value="<?php if (isset($user_info['username'])) {echo $user_info['username'];} ?>" required>
                 </div>
                 <div class="col-md-6">
                     <label for="inputPassword" class="form-label">
@@ -64,7 +64,7 @@
                     <label for="inputDate" class="form-label">
                         Date of birth
                     </label>
-                    <input type="text" class="form-control" id="inputDate" placeholder="yyyy-mm-dd" name="birthdate" required>
+                    <input type="text" class="form-control" id="inputDate" placeholder="yyyy-mm-dd" name="birthdate" value="<?php if (isset($user_info['birthdate'])) {echo $user_info['birthdate'];} ?>" required>
                 </div>
                 <div class="col-md-3 py-3">
                     <label for="inputPhone" class="form-label">
