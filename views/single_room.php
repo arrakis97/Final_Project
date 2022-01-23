@@ -81,6 +81,7 @@
                 </tr>
                 </tbody>
             </table>
+
             <?php if ($display_buttons) { ?>
                 <div class="row">
                     <div class="col-sm-2">
