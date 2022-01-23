@@ -891,7 +891,7 @@ function check_room_interest ($pdo, $room) {
 }
 
 /**
- * Check if a tenant has opted in to one of the owner's rooms from the owner's perspective
+ * Check if a tenant has opted in to one of the owner's rooms
  * @param $pdo
  * @param $owner
  * @param $tenant
@@ -903,25 +903,6 @@ function check_owner_tenant ($pdo, $owner, $tenant) {
     $owners = $stmt->fetchAll();
     foreach ($owners as $value) {
         if ($value['owner'] == $owner) {
-            return True;
-        }
-    }
-    return False;
-}
-
-/**
- * Check if the tenant has opted in to one of the owner's rooms from the tenant's perspective
- * @param $pdo
- * @param $owner
- * @param $tenant
- * @return bool
- */
-function check_tenant_owner($pdo, $owner, $tenant) {
-    $stmt = $pdo->prepare('SELECT users.id FROM users JOIN opt_in ON users.id = opt_in.user JOIN rooms ON opt_in.room = rooms.id WHERE rooms.owner = ?');
-    $stmt->execute([$owner]);
-    $tenants = $stmt->fetchAll();
-    foreach ($tenants as $value) {
-        if ($value['id'] == $tenant) {
             return True;
         }
     }
@@ -1027,13 +1008,12 @@ function inbox ($pdo, $user) {
     $stmt = $pdo->prepare('SELECT DISTINCT users.id FROM users JOIN messages ON users.id = messages.sender WHERE messages.receiver = ?');
     $stmt->execute([$user]);
     $senders = $stmt->fetchAll();
-    $diff = array_diff_assoc(array_column($receivers, 'id'), array_column($senders, 'id'));
-    $inter = array_intersect_assoc(array_column($receivers, 'id'), array_column($senders, 'id'));
-    $merge = array_merge($diff, $inter);
+    $merge = array_merge($receivers, $senders);
+    $unique = array_unique($merge, SORT_REGULAR);
     $names = Array();
-    foreach ($merge as $value) {
+    foreach ($unique as $value) {
         $stmt = $pdo->prepare('SELECT id, first_name, last_name FROM users WHERE id = ?');
-        $stmt->execute([$value]);
+        $stmt->execute([$value['id']]);
         $name = $stmt->fetchAll();
         $name_exp = Array();
         foreach ($name as $key => $name_value) {
@@ -1043,7 +1023,7 @@ function inbox ($pdo, $user) {
         }
         $names = array_merge($names, $name_exp);
     }
-    return messages_overview_table($names);
+    return $names;
 }
 
 function messages_overview_table ($users) {

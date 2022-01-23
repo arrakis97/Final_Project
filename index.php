@@ -526,8 +526,9 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
                 redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
             }
             else {
-                if (!check_tenant_owner($db, $user_profile, $current_user)) {
-                    $feedback = ['type' => 'danger', 'message' => 'You are not opted in to one of these owner\'s room and cannot see their profile.'];
+                $rooms = get_rooms_owner($db, $user_profile);
+                if (empty($rooms)) {
+                    $feedback = ['type' => 'danger', 'message' => 'This owner does not offer any rooms and you cannot see their profile.'];
                     redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
                 }
                 $send_message = True;
@@ -684,7 +685,7 @@ elseif (new_route('/DDWT21/Final_Project/messages_overview/', 'get')) {
         $left_content = '<b>You have not started any conversations yet</b>';
     }
     else {
-        $left_content = $messages_overview;
+        $left_content = messages_overview_table($messages_overview);
     }
 
     /* Check if an error message is set and display it if available */
@@ -716,7 +717,7 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     else {
         $inactive_user = $user1;
     }
-    $inactive_user_name = display_user($db, $inactive_user);
+    $inactive_user_info = get_profile_info($db, $inactive_user);
 
     /* Page info */
     $page_title = 'Messages';

@@ -19,13 +19,30 @@
 <?= $navigation ?>
 
 <!-- Content -->
-<div class="container">
+<div class="container-fluid">
     <div class="pd-15">&nbsp;</div>
 
     <div class="row">
 
         <!-- Left column -->
-        <div class="col-md-8">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Monthly price
+                </div>
+                <div class="card-body">
+                    <p class="count">
+                        The monthly price for this room is
+                    </p>
+                    <h2>€<?= $room_info['price'] ?></h2>
+                    <br>
+                    <p><?php if ($room_info['including_utilities'] == 1) {echo "This price is including utilities";} else {echo "This price is not including utilities";} ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center -->
+        <div class="col-md-6">
             <!-- Error message -->
             <?php if (isset($error_msg)){echo $error_msg;} ?>
 
@@ -77,26 +94,11 @@
                     </div>
                 </div>
             <?php } ?>
-
         </div>
 
         <!-- Right column -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    Monthly price
-                </div>
-                <div class="card-body">
-                    <p class="count">
-                        The monthly price for this room is
-                    </p>
-                    <h2>€<?= $room_info['price'] ?></h2>
-                    <br>
-                    <p><?php if ($room_info['including_utilities'] == 1) {echo "This price is including utilities";} else {echo "This price is not including utilities";} ?></p>
-                </div>
-            </div>
+        <div class="col-md-3">
             <?php if (!check_owner($db)) { ?>
-                <hr>
                 <div class="card">
                     <div class="card-header">
                         Opt-in
@@ -119,12 +121,32 @@
                         <?php } ?>
                     </div>
                 </div>
+                <hr>
+                <div class="card">
+                    <div class="card-header">
+                        View profile
+                    </div>
+                    <div class="card-body">
+                        <p>Click the button below to view the profile of the owner of this room.</p>
+                        <a href="/DDWT21/Final_Project/view_profile/?user_id=<?= $room_info['owner'] ?>" role="button" class="btn btn-primary">View owner's profile</a>
+                    </div>
+                </div>
+            <?php } else { ?>
+                <div class="card">
+                    <div class="card-header">
+                        Opt-ins
+                    </div>
+                    <div class="card-body">
+                        <p>Click the button below to see all the opt-ins for this room.</p>
+                        <a href="/DDWT21/Final_Project/room_opt-ins/?room_id=<?= $room_id ?>" role="button" class="btn btn-primary">View opt-ins</a>
+                    </div>
+                </div>
             <?php } ?>
         </div>
-
     </div>
 </div>
 
+<div class="pd-15">&nbsp;</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

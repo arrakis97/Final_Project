@@ -34,7 +34,7 @@
                         <div class="d-flex align-items-center py-1">
                             <div class="position-relative"></div>
                             <div class="flex-grow-1 pl-3">
-                                <strong><?= $inactive_user_name['first_name'] ?></strong>
+                                <a href="/DDWT21/Final_Project/view_profile/?user_id=<?= $inactive_user_info['id'] ?>"><strong><?= $inactive_user_info['first_name'] ?></strong></a>
                             </div>
                         </div>
                     </div>
