@@ -470,6 +470,7 @@ function get_rooms_table($pdo, $rooms) {
     <tr>
         <th scope="col">City</th>
         <th scope="col">Address</th>
+        <th scope="col">Price</th>
         <th scope="col"></th>
         ';
         if (check_owner($pdo)) {
@@ -486,6 +487,7 @@ function get_rooms_table($pdo, $rooms) {
         <tr>
             <th scope="row">'.$room['city'].'</th>
             <th scope="row">'.$room['street_name'].' '.$room['house_number'].$room['addition'].'</th>
+            <th scope="row">€'.$room['price'].'</th>
             <td><a href="/DDWT21/Final_Project/room/?room_id='.$room['id'].'" role="button" class="btn btn-primary">More info</a></td>
             ';
             if (check_owner($pdo)) {
