@@ -170,7 +170,7 @@
                     <label for="inputInfo">
                         General information
                     </label>
-                    <textarea class="form-control" id="inputInfo" rows="3" placeholder="Here you can share general information about the room" name="general_info" required><?php if (isset($room_info)){echo $room_info['general_info'];} ?></textarea>
+                    <textarea class="form-control" id="inputInfo" rows="6" placeholder="Here you can share general information about the room" name="general_info" required><?php if (isset($room_info)){echo $room_info['general_info'];} ?></textarea>
                 </div>
                 <?php if (isset($room_id)) { ?><input type="hidden" name="room_id" value="<?php echo $room_id ?>"><?php } ?>
                 <?php if ($display_buttons) { ?>
