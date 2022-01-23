@@ -20,16 +20,16 @@ $navigation_array = Array (
         'url' => '/DDWT21/Final_Project/'
     ),
     2 => Array (
-        'name' => 'Registration',
+        'name' => 'Register',
         'url' => '/DDWT21/Final_Project/register/'
     ),
     3 => Array (
-        'name' => 'My Account',
-        'url' => '/DDWT21/Final_Project/my_account/'
-    ),
-    4 => Array (
         'name' => 'Log-in',
         'url' => '/DDWT21/Final_Project/login/'
+    ),
+    4 => Array (
+        'name' => 'My Account',
+        'url' => '/DDWT21/Final_Project/my_account/'
     ),
     5 => Array (
         'name' => 'Add room',
@@ -53,8 +53,8 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
     $navigation = get_navigation($navigation_array, 1);
 
     /* Page content */
-    $page_subtitle = 'The online platform to find a room';
-    $page_content = 'Kamernet 2.0';
+    $page_subtitle = 'The online platform for connecting owners and tenants';
+    $page_content = 'Groningen-Net';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -73,8 +73,7 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
     $navigation = get_navigation($navigation_array, 2);
 
     /* Page content */
-    $page_subtitle = 'The online platform to find a room';
-    $page_content = 'Here you can register for Kamernet 2.0';
+    $page_content = 'Here you can register for Groningen-Net';
     $submit_button = 'Register now';
     $form_action = '/DDWT21/Final_Project/register/';
 
@@ -114,7 +113,7 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     /* Page info */
     $page_title = 'My Account';
     /* Check which page is the active page */
-    $navigation = get_navigation($navigation_array, 3);
+    $navigation = get_navigation($navigation_array, 4);
 
     /* Page content */
     $page_subtitle = 'Your account';
@@ -135,10 +134,10 @@ elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
     /* Page info */
     $page_title = 'Login';
     /* Check which page is the active page */
-    $navigation = get_navigation($navigation_array, 4);
+    $navigation = get_navigation($navigation_array, 3);
 
     /* Page content */
-    $page_subtitle = 'Login to you Kamernet 2.0 account';
+    $page_subtitle = 'Login to you Groningen-Net account';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
@@ -243,7 +242,7 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
 
     /* Page content */
     $page_subtitle = 'The overview of all available rooms';
-    $page_content = 'Here you can find all rooms available on Kamernet 2.0';
+    $page_content = 'Here you can find all rooms available on Groningen-Net';
     if (check_owner($db)) {
         $rooms = get_rooms_owner($db, $_SESSION['user_id']);
         if (empty($rooms)) {

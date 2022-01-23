@@ -30,10 +30,7 @@
             <?php if (isset($error_msg)){echo $error_msg;} ?>
 
             <h1><?= $page_title ?></h1>
-            <h5><?= $page_subtitle ?></h5>
             <p><?= $page_content ?></p>
-
-
 
             <form action="<?= $form_action ?>" method="POST" class="row g-5">
                 <div class="col-md-6">
