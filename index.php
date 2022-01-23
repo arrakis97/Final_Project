@@ -49,9 +49,6 @@ $navigation_array = Array (
 if (new_route('/DDWT21/Final_Project/', 'get')) {
     /* Page info */
     $page_title = 'Home';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 1);
 
@@ -72,10 +69,6 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
     /* Page info */
     $page_title = 'Register';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Registration' => na('/DDWT21/Final_Project/register/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 2);
 
@@ -120,10 +113,6 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
 
     /* Page info */
     $page_title = 'My Account';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'My Account' => na('/DDWT21/Final_Project/my_account/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 3);
 
@@ -146,10 +135,6 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
     /* Page info */
     $page_title = 'Login';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Login' => na('/DDWT21/Final_Project/login/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 4);
 
@@ -205,10 +190,6 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
 
     /* Page info */
     $page_title = 'Add room';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Add room' => na('/DDWT21/Final_Project/add_room/', False)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 5);
 
@@ -259,10 +240,6 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
 
     /* Page info */
     $page_title = 'View rooms';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 6);
 
@@ -309,11 +286,6 @@ elseif (new_route('/DDWT21/Final_Project/room/', 'get')) {
 
     /* Page info */
     $page_title = $room_info['street_name'] . ' ' . $room_info['house_number'] . $room_info['addition'] . ', ' . $room_info['city'];
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
-        $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/room/?room_id='.$room_id, True)
-    ]);
 
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
@@ -347,10 +319,6 @@ elseif (new_route('/DDWT21/Final_Project/edit_room/', 'get')) {
 
     /* Page info */
     $page_title = 'Edit your room';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'] => na('/DDWT21/Final_Project/edit_room/?room_id='.$room_id, True)
-    ]);
 
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
@@ -466,10 +434,6 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
 
     /* Page info */
     $page_title = 'Opt-ins';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Opt-ins' => na('/DDWT21/Final_Project/opt-ins/', True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
 
@@ -518,11 +482,6 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
 
     /* Page info */
     $page_title = 'Opt-ins for ' . $address['street_name'] . ' ' . $address['house_number'] . $address['addition'] . ', ' . $address['city'];
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'View rooms' => na('/DDWT21/Final_Project/view_rooms/', False),
-        'Opt-ins for ' . $address['street_name'] . ' ' . $address['house_number'] . $address['addition'] . ', ' . $address['city'] => na('/DDWT21/Final_Project/room_opt-ins/?room_id='.$room_id, True)
-    ]);
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
 
@@ -594,10 +553,7 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
 
     /* Page info */
     $page_title = 'View profile';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'View profile' => na('/DDWT21/Final_Project/view_profile/', True)
-    ]);
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
 
@@ -636,10 +592,6 @@ elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'get')) {
 
     /* Page info */
     $page_title = 'Edit your profile';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Edit profile of ' . $user_info['first_name'] . ' ' . $user_info['last_name'] => na('/DDWT21/Final_Project/edit_profile/?user_id='.$user_profile, True)
-    ]);
 
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
@@ -711,10 +663,7 @@ elseif (new_route('/DDWT21/Final_Project/messages_overview/', 'get')) {
 
     /* Page info */
     $page_title = 'Messages';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Messages' => na('/DDWT21/Final_Project/messages_overview/', True)
-    ]);
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 7);
 
@@ -762,11 +711,7 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
 
     /* Page info */
     $page_title = 'Messages';
-    $breadcrumbs = get_breadcrumbs([
-        'Home' => na('/DDWT21/Final_Project/', False),
-        'Messages' => na('/DDWT21/Final_Project/messages_overview/', False),
-        'Conversation with ' .$inactive_user_name['first_name'] => na('/DDWT21/Final_Project/conversation/?user1='.$user1.'&user2='.$user2, True)
-    ]);
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 7);
 

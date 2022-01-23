@@ -73,28 +73,6 @@ function use_template($template){
 }
 
 /**
- * Creates breadcrumb HTML code using given array
- * @param array $breadcrumbs Array with as Key the page name and as Value the corresponding URL
- * @return string HTML code that represents the breadcrumbs
- */
-function get_breadcrumbs($breadcrumbs) {
-    $breadcrumbs_exp = '
-    <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">';
-    foreach ($breadcrumbs as $name => $info) {
-        if ($info[1]){
-            $breadcrumbs_exp .= '<li class="breadcrumb-item active" aria-current="page">'.$name.'</li>';
-        }else{
-            $breadcrumbs_exp .= '<li class="breadcrumb-item"><a href="'.$info[0].'">'.$name.'</a></li>';
-        }
-    }
-    $breadcrumbs_exp .= '
-    </ol>
-    </nav>';
-    return $breadcrumbs_exp;
-}
-
-/**
  * Creates navigation HTML code using given array
  * @param $template Array with page names and URL's
  * @param $active_id ID of the current active page
