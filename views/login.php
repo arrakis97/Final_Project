@@ -21,33 +21,30 @@
 <!-- Content -->
 <div class="container">
     <div class="pd-15">&nbsp;</div>
-
     <div class="row">
-
-        <!-- Left column -->
         <div class="col-md-12">
             <!-- Error message -->
             <?php if (isset($error_msg)){echo $error_msg;} ?>
 
-            <h1><?= $page_title ?></h1>
-            <h5><?= $page_subtitle ?></h5>
+            <h1 style="text-align: center"><?= $page_title ?></h1>
+            <h5 style="text-align: center"><?= $page_subtitle ?></h5>
 
             <div class="pd-15">&nbsp;</div>
 
             <form action="/DDWT21/Final_Project/login/" method="POST">
-                <div class="col-md-6">
+                <div class="col-md-6" style="margin: auto">
                     <label for="inputUsername" class="form-label">
                         Email/Username
                     </label>
                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter your email or username" name="username" required>
                 </div>
-                <div class="col-md-6 py-3">
+                <div class="col-md-6 py-3" style="margin: auto">
                     <label for="inputPassword" class="form-label">
                         Password
                     </label>
                     <input type="password" class="form-control" id="inputPassword" placeholder="Enter password" name="password" required>
                 </div>
-                <div class="form-group align-bottom">
+                <div class="col-md-6" style="margin: auto">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
             </form>
