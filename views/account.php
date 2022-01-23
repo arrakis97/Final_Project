@@ -14,6 +14,7 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
 <!-- Menu -->
 <?= $navigation ?>
 

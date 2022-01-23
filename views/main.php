@@ -13,16 +13,21 @@
     <link rel="stylesheet" href="/DDWT21/Final_Project/css/main.css">
 
     <title><?= $page_title ?></title>
+
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: rgba(236,236,236,0.94);-->
+<!--        }-->
+<!--    </style>-->
 </head>
 <body>
+<img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
 <!-- Menu -->
 <?= $navigation ?>
-
 <!-- Content -->
 <div class="container">
     <!-- Breadcrumbs -->
     <div class="pd-15">&nbsp;</div>
-    <?= $breadcrumbs ?>
 
     <div class="row">
 

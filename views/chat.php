@@ -14,13 +14,14 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
 <!-- Menu -->
 <?= $navigation ?>
 
 <div class="container">
     <!-- Breadcrumbs -->
     <div class="pd-15">&nbsp;</div>
-    <?= $breadcrumbs ?>
+<!--    --><?//= $breadcrumbs ?>
 
     <div class="container">
         <h1><?= $page_title ?></h1>
