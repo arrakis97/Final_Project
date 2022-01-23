@@ -928,8 +928,11 @@ function get_profile_info ($pdo, $user_id) {
 function update_profile($pdo, $user_info) {
     /* Check if all fields are set */
     if (
+        empty($user_info['username']) or
+        empty($user_info['password']) or
         empty($user_info['first_name']) or
         empty($user_info['last_name']) or
+        empty($user_info['birthdate']) or
         empty($user_info['phone_number']) or
         empty($user_info['email']) or
         empty($user_info['language']) or
@@ -958,11 +961,32 @@ function update_profile($pdo, $user_info) {
         ];
     }
 
+    /* Get current username */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+    $stmt->execute([$user_info['user_id']]);
+    $users = $stmt->fetch();
+    $current_username = $users['username'];
+
+    /* Check if email is already in use */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+    $stmt->execute([$user_info['username']]);
+    $users = $stmt->fetch();
+    if ($user_info['username'] == $users['username'] and $users['username'] != $current_username) {
+        return [
+            'type' => 'danger',
+            'message' => 'This username is in use already.'
+        ];
+    }
+
     /* Update profile */
-    $stmt = $pdo->prepare('UPDATE users SET first_name = ?, last_name = ?, phone_number = ?, email = ?, language = ?, occupation = ?, biography = ? WHERE id = ?');
+    $stmt = $pdo->prepare('UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ?, birthdate = ?, 
+                 phone_number = ?, email = ?, language = ?, occupation = ?, biography = ? WHERE id = ?');
     $stmt->execute([
+        $user_info['username'],
+        $user_info['password'],
         $user_info['first_name'],
         $user_info['last_name'],
+        $user_info['birthdate'],
         $user_info['phone_number'],
         $user_info['email'],
         $user_info['language'],
