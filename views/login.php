@@ -35,15 +35,21 @@
             <div class="pd-15">&nbsp;</div>
 
             <form action="/DDWT21/Final_Project/login/" method="POST">
-                <div class="form-group">
-                    <label for="inputUsername">Email/Username</label>
+                <div class="col-md-6">
+                    <label for="inputUsername" class="form-label">
+                        Email/Username
+                    </label>
                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter your email or username" name="username" required>
                 </div>
-                <div class="form-group">
-                    <label for="inputPassword">Password</label>
+                <div class="col-md-6 py-3">
+                    <label for="inputPassword" class="form-label">
+                        Password
+                    </label>
                     <input type="password" class="form-control" id="inputPassword" placeholder="Enter password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
+                <div class="form-group align-bottom">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
             </form>
 
         </div>
