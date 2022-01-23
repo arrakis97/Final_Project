@@ -12,6 +12,15 @@
     <link rel="stylesheet" href="/DDWT21/Final_Project/css/css_chat.css">
 
     <title><?= $page_title ?></title>
+
+    <style>
+        .chat-header {
+            background-color: #EBEBEB;
+        }
+        .chat-field {
+            background-color: #f9fcf9;
+        }
+    </style>
 </head>
 <body>
 <img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
@@ -30,7 +39,7 @@
         <div class="card">
             <div class="row g-0">
                 <div class="col-12">
-                    <div class="py-2 px-4 border-bottom">
+                    <div class="py-2 px-4 border-bottom chat-header">
                         <div class="d-flex align-items-center py-1">
                             <div class="position-relative"></div>
                             <div class="flex-grow-1 pl-3">
@@ -40,7 +49,7 @@
                     </div>
 
                     <div class="position-relative">
-                        <div class="chat-messages p-4">
+                        <div class="chat-messages chat-field p-4">
                             <?php echo $messages_table; ?>
                         </div>
                     </div>

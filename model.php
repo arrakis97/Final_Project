@@ -1142,7 +1142,7 @@ function conversation_table ($pdo, $user1, $user2) {
                         '.date('H:i', $date).'
                     </div>
                 </div>
-                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                <div class="flex-shrink-1 rounded py-2 px-3 mr-3" style="background: rgba(13, 202, 240, 0.8)">
                     <div class="font-weight-bold mb-1">
                         You
                     </div>
@@ -1162,7 +1162,7 @@ function conversation_table ($pdo, $user1, $user2) {
                         '.date('H:i', $date).'
                     </div>
                 </div>
-                <div class="flex-shrink-1 bg-info rounded py-2 px-3 mr-3">
+                <div class="flex-shrink-1 rounded py-2 px-3 mr-3" style="background: rgba(13, 110, 253, 0.5)">
                     <div class="font-weight-bold mb-1">
                         '.$inactive_user_name['first_name'].'
                     </div>
