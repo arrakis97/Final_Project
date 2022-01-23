@@ -53,16 +53,6 @@ function new_route($route_uri, $request_type){
 }
 
 /**
- * Creates a new navigation array item using URL and active status
- * @param string $url The URL of the navigation item
- * @param bool $active Set the navigation item to active or inactive
- * @return array
- */
-function na($url, $active){
-    return [$url, $active];
-}
-
-/**
  * Creates filename to the template
  * @param string $template Filename of the template without extension
  * @return string
@@ -305,24 +295,16 @@ function login_user ($pdo, $form_data) {
         ];
     }
 
-    /* Check if user exists */
-    try {
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
-        $stmt->execute([$form_data['username']]);
-        $user_info = $stmt->fetch();
-    }
-    catch (PDOException $e) {
-        return [
-            'type' => 'danger',
-            'message' => sprintf('There was an error %s', $e->getMessage())
-        ];
-    }
+    /* Check if email/username exists */
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? OR email = ?');
+    $stmt->execute([$form_data['username'], $form_data['username']]);
+    $user_info = $stmt->fetch();
 
-    /* Return error message for wrong username */
+    /* Return error message for wrong email/username */
     if (empty($user_info)) {
         return [
             'type' => 'danger',
-            'message' => 'The username you entered does not exist.'
+            'message' => 'The email or username you entered does not exist.'
         ];
     }
 

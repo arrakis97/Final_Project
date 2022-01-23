@@ -36,8 +36,8 @@
 
             <form action="/DDWT21/Final_Project/login/" method="POST">
                 <div class="form-group">
-                    <label for="inputUsername">Username</label>
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter username" name="username" required>
+                    <label for="inputUsername">Email/Username</label>
+                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter your email or username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword">Password</label>
