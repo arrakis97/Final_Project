@@ -64,8 +64,8 @@ function use_template($template){
 
 /**
  * Creates navigation HTML code using given array
- * @param $template Array with page names and URL's
- * @param $active_id ID of the current active page
+ * @param array $template Array with page names and URL's
+ * @param int $active_id ID of the current active page
  * @return string HTML code that represents the navigation
  */
 function get_navigation($template, $active_id){
@@ -80,12 +80,11 @@ function get_navigation($template, $active_id){
     foreach ($template as $name => $info) {
         if ($name == $active_id){
             $navigation_exp .= '<li class="nav-item active">';
-            $navigation_exp .= '<a class="nav-link" href="'.$info['url'].'">'.$info['icon'].' '.$info['name'].'</a>';
-        }else{
-            $navigation_exp .= '<li class="nav-item">';
-            $navigation_exp .= '<a class="nav-link" href="'.$info['url'].'">'.$info['icon'].' '.$info['name'].'</a>';
         }
-
+        else{
+            $navigation_exp .= '<li class="nav-item">';
+        }
+        $navigation_exp .= '<a class="nav-link" href="'.$info['url'].'">'.$info['icon'].' '.$info['name'].'</a>';
         $navigation_exp .= '</li>';
     }
     $navigation_exp .= '
@@ -119,25 +118,24 @@ function get_error($feedback){
 }
 
 /**
- * Pretty Print Array
- * @param $input
- */
-function p_print($input){
-    echo '<pre>';
-    print_r($input);
-    echo '</pre>';
-}
-
-/**
  * Find the first and last name of a user
  * @param PDO $pdo Database
  * @param int $user_id User ID for which you want to find the name
  * @return array Contains first and last name of a user
  */
 function display_user($pdo, $user_id) {
-    $stmt = $pdo->prepare('SELECT first_name, last_name FROM users WHERE id = ?');
-    $stmt->execute([$user_id]);
-    $user_name = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT first_name, last_name FROM users WHERE id = ?');
+        $stmt->execute([$user_id]);
+        $user_name = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     $user_name_exp = Array();
     foreach ($user_name as $key => $value) {
         $user_name_exp[$key] = htmlspecialchars($value);
@@ -145,10 +143,25 @@ function display_user($pdo, $user_id) {
     return $user_name_exp;
 }
 
+/**
+ * Find the role of a user
+ * @param PDO $pdo Database
+ * @param int $user_id User ID for which you want to find the name
+ * @return array|mixed|string Contains user role
+ */
 function display_role($pdo, $user_id) {
-    $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
-    $stmt->execute([$user_id]);
-    $user_role = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
+        $stmt->execute([$user_id]);
+        $user_role = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     $user_role_exp = Array ();
     foreach ($user_role as $key => $value) {
         $user_role_exp[$key] = htmlspecialchars($value);
@@ -183,20 +196,36 @@ function register_user($pdo, $form_data) {
     }
 
     /* Check if user exists already */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
-    $stmt->execute([$form_data['username']]);
-    $user_exists = $stmt->rowCount();
-
-    /* Check if e-mail exists already */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-    $stmt->execute([$form_data['email']]);
-    $email_exists = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$form_data['username']]);
+        $user_exists = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     /* Return error message for existing username */
     if (!empty($user_exists)) {
         return [
             'type' => 'danger',
             'message' => 'The username you entered exists already.'
+        ];
+    }
+
+    /* Check if e-mail exists already */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$form_data['email']]);
+        $email_exists = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
         ];
     }
 
@@ -212,23 +241,31 @@ function register_user($pdo, $form_data) {
     $password = password_hash($form_data['password'], PASSWORD_DEFAULT);
 
     /* Save user to the database */
-    $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, 
+    try {
+        $stmt = $pdo->prepare('INSERT INTO users (username, password, first_name, last_name, role, birthdate, phone_number, 
                    email, language, occupation, biography) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    $stmt->execute([
-        $form_data['username'],
-        $password,
-        $form_data['first_name'],
-        $form_data['last_name'],
-        $form_data['role'],
-        $form_data['birthdate'],
-        $form_data['phone_number'],
-        $form_data['email'],
-        $form_data['language'],
-        $form_data['occupation'],
-        $form_data['biography']
-    ]);
-    $inserted = $stmt->rowCount();
-    $user_id = $pdo->lastInsertId();
+        $stmt->execute([
+            $form_data['username'],
+            $password,
+            $form_data['first_name'],
+            $form_data['last_name'],
+            $form_data['role'],
+            $form_data['birthdate'],
+            $form_data['phone_number'],
+            $form_data['email'],
+            $form_data['language'],
+            $form_data['occupation'],
+            $form_data['biography']
+        ]);
+        $user_id = $pdo->lastInsertId();
+        $inserted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     /* Login user */
     if ($inserted == 1) {
@@ -263,6 +300,11 @@ function check_login () {
     }
 }
 
+/**
+ * Check if the current user is an owner
+ * @param PDO $pdo Database
+ * @return bool
+ */
 function check_owner($pdo) {
     if (display_role($pdo, $_SESSION['user_id']) == 'Owner') {
         return True;
@@ -291,9 +333,17 @@ function login_user ($pdo, $form_data) {
     }
 
     /* Check if email/username exists */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? OR email = ?');
-    $stmt->execute([$form_data['username'], $form_data['username']]);
-    $user_info = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? OR email = ?');
+        $stmt->execute([$form_data['username'], $form_data['username']]);
+        $user_info = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     /* Return error message for wrong email/username */
     if (empty($user_info)) {
@@ -342,6 +392,12 @@ function logout_user () {
     }
 }
 
+/**
+ * Add a room to the database
+ * @param PDO $pdo Database
+ * @param array $room_info Array with data filled in by user
+ * @return string[]
+ */
 function add_room ($pdo, $room_info) {
     /* Check if all fields are set */
     if (
@@ -399,15 +455,24 @@ function add_room ($pdo, $room_info) {
     }
 
     /* Check if room exists already */
-    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
-    $stmt->execute([
-        $room_info['city'],
-        $room_info['street_name'],
-        $room_info['house_number'],
-        $room_info['addition']
-    ]);
-    $room = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
+        $stmt->execute([
+            $room_info['city'],
+            $room_info['street_name'],
+            $room_info['house_number'],
+            $room_info['addition']
+        ]);
+        $room = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    /* Return error message if room exists */
     if (!empty($room)) {
         return [
             'type' => 'danger',
@@ -416,26 +481,34 @@ function add_room ($pdo, $room_info) {
     }
 
     /* Save room to database */
-    $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, including_utilities, 
+    try {
+        $stmt = $pdo->prepare('INSERT INTO rooms (owner, city, street_name, house_number, addition, type, size, price, rent_allowance, including_utilities, 
                    shared_kitchen, shared_bathroom, nr_roommates, nr_rooms, general_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    $stmt->execute([
-        $room_info['owner'],
-        $room_info['city'],
-        $room_info['street_name'],
-        $room_info['house_number'],
-        $room_info['addition'],
-        $room_info['type'],
-        $room_info['size'],
-        $room_info['price'],
-        $room_info['rent_allowance'],
-        $room_info['including_utilities'],
-        $room_info['shared_kitchen'],
-        $room_info['shared_bathroom'],
-        $room_info['nr_roommates'],
-        $room_info['nr_rooms'],
-        $room_info['general_info']
-    ]);
-    $inserted = $stmt->rowCount();
+        $stmt->execute([
+            $room_info['owner'],
+            $room_info['city'],
+            $room_info['street_name'],
+            $room_info['house_number'],
+            $room_info['addition'],
+            $room_info['type'],
+            $room_info['size'],
+            $room_info['price'],
+            $room_info['rent_allowance'],
+            $room_info['including_utilities'],
+            $room_info['shared_kitchen'],
+            $room_info['shared_bathroom'],
+            $room_info['nr_roommates'],
+            $room_info['nr_rooms'],
+            $room_info['general_info']
+        ]);
+        $inserted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     if ($inserted == 1) {
         return [
@@ -451,12 +524,25 @@ function add_room ($pdo, $room_info) {
     }
 }
 
+/**
+ * Collect all info of all rooms
+ * @param PDO $pdo Database
+ * @return array Contains all info on all rooms
+ */
 function get_rooms($pdo) {
-    $stmt = $pdo->prepare('SELECT * FROM rooms');
-    $stmt->execute();
-    $rooms = $stmt->fetchAll();
-    $rooms_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM rooms');
+        $stmt->execute();
+        $rooms = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $rooms_exp = Array();
     foreach ($rooms as $key => $value) {
         foreach ($value as $user_key => $user_input) {
             $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
@@ -465,6 +551,12 @@ function get_rooms($pdo) {
     return $rooms_exp;
 }
 
+/**
+ * Create an HTML table of all rooms
+ * @param PDO $pdo Database
+ * @param array $rooms Info on all the rooms
+ * @return string HTML table
+ */
 function get_rooms_table($pdo, $rooms) {
     $table_exp = '
     <table class="table table-hover">
@@ -510,36 +602,78 @@ function get_rooms_table($pdo, $rooms) {
     return $table_exp;
 }
 
+/**
+ * Get all info of one specific room
+ * @param PDO $pdo Database
+ * @param int $room_id ID of the room
+ * @return array Contains all info of one specific room
+ */
 function get_room_info($pdo, $room_id) {
-    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE id = ?');
-    $stmt->execute([$room_id]);
-    $room_info = $stmt->fetch();
-    $room_info_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM rooms WHERE id = ?');
+        $stmt->execute([$room_id]);
+        $room_info = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $room_info_exp = Array();
     foreach ($room_info as $key => $value) {
         $room_info_exp[$key] = htmlspecialchars($value);
     }
     return $room_info_exp;
 }
 
+/**
+ * Get the address of a specific room
+ * @param PDO $pdo Database
+ * @param int $room_id ID of the room
+ * @return array Contains the address of one specific room
+ */
 function room_address($pdo, $room_id) {
-    $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE id = ?');
-    $stmt->execute([$room_id]);
-    $room_address = $stmt->fetch();
-    $room_address_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE id = ?');
+        $stmt->execute([$room_id]);
+        $room_address = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $room_address_exp = Array();
     foreach ($room_address as $key => $value) {
         $room_address_exp[$key] = htmlspecialchars($value);
     }
     return $room_address_exp;
 }
 
+/**
+ * Get all the rooms of a specific owner
+ * @param PDO $pdo Database
+ * @param int $owner ID of the owner
+ * @return array All info on all the rooms of a specific owner
+ */
 function get_rooms_owner($pdo, $owner) {
-    $stmt = $pdo->prepare('SELECT * FROM rooms WHERE owner = ?');
-    $stmt->execute([$owner]);
-    $rooms = $stmt->fetchAll();
-    $rooms_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM rooms WHERE owner = ?');
+        $stmt->execute([$owner]);
+        $rooms = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $rooms_exp = Array();
     foreach ($rooms as $key => $value) {
         foreach ($value as $user_key => $user_input) {
             $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
@@ -548,6 +682,12 @@ function get_rooms_owner($pdo, $owner) {
     return $rooms_exp;
 }
 
+/**
+ * Update the info on a room
+ * @param PDO $pdo Database
+ * @param array $room_info All info of the room
+ * @return string[]
+ */
 function update_room($pdo, $room_info) {
     /* Check if all fields are set */
     if (
@@ -617,14 +757,22 @@ function update_room($pdo, $room_info) {
     $current_address = room_address($pdo, $room_info['room_id']);
 
     /* Check if room exists already */
-    $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
-    $stmt->execute([
-        $room_info['city'],
-        $room_info['street_name'],
-        $room_info['house_number'],
-        $room_info['addition']
-    ]);
-    $rooms = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT city, street_name, house_number, addition FROM rooms WHERE city = ? AND street_name = ? AND house_number = ? AND addition = ?');
+        $stmt->execute([
+            $room_info['city'],
+            $room_info['street_name'],
+            $room_info['house_number'],
+            $room_info['addition']
+        ]);
+        $rooms = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     if ($room_info_array === $rooms and $rooms !== $current_address) {
         return [
@@ -634,28 +782,37 @@ function update_room($pdo, $room_info) {
     }
 
     /* Update room */
-    $stmt = $pdo->prepare('UPDATE rooms SET city = ?, street_name = ?, house_number = ?, addition = ?, type = ?, size = ?, 
+    try {
+        $stmt = $pdo->prepare('UPDATE rooms SET city = ?, street_name = ?, house_number = ?, addition = ?, type = ?, size = ?, 
                  price = ?, rent_allowance = ?, including_utilities = ?, shared_kitchen = ?, shared_bathroom = ?, nr_roommates = ?, 
                  nr_rooms = ?, general_info = ? WHERE id = ? AND owner = ?');
-    $stmt->execute([
-        $room_info['city'],
-        $room_info['street_name'],
-        $room_info['house_number'],
-        $room_info['addition'],
-        $room_info['type'],
-        $room_info['size'],
-        $room_info['price'],
-        $room_info['rent_allowance'],
-        $room_info['including_utilities'],
-        $room_info['shared_kitchen'],
-        $room_info['shared_bathroom'],
-        $room_info['nr_roommates'],
-        $room_info['nr_rooms'],
-        $room_info['general_info'],
-        $room_info['room_id'],
-        $room_info['owner']
-    ]);
-    $updated = $stmt->rowCount();
+        $stmt->execute([
+            $room_info['city'],
+            $room_info['street_name'],
+            $room_info['house_number'],
+            $room_info['addition'],
+            $room_info['type'],
+            $room_info['size'],
+            $room_info['price'],
+            $room_info['rent_allowance'],
+            $room_info['including_utilities'],
+            $room_info['shared_kitchen'],
+            $room_info['shared_bathroom'],
+            $room_info['nr_roommates'],
+            $room_info['nr_rooms'],
+            $room_info['general_info'],
+            $room_info['room_id'],
+            $room_info['owner']
+        ]);
+        $updated = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($updated == 1) {
         return [
             'type' => 'success',
@@ -670,14 +827,29 @@ function update_room($pdo, $room_info) {
     }
 }
 
+/**
+ * Remove a specific room from the database
+ * @param PDO $pdo Database
+ * @param int $room_id ID of the specific room
+ * @return array|string[]
+ */
 function remove_room($pdo, $room_id) {
     /* Get room address */
     $room_address = room_address($pdo, $room_id);
 
     /* Delete room */
-    $stmt = $pdo->prepare('DELETE FROM rooms WHERE id = ?');
-    $stmt->execute([$room_id]);
-    $deleted = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('DELETE FROM rooms WHERE id = ?');
+        $stmt->execute([$room_id]);
+        $deleted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($deleted == 1) {
         return [
             'type' => 'success',
@@ -692,10 +864,26 @@ function remove_room($pdo, $room_id) {
     }
 }
 
+/**
+ * Check if a specific user has opted in to a specific room
+ * @param PDO $pdo Database
+ * @param int $room ID of the room
+ * @param int $user ID of the user
+ * @return array|bool
+ */
 function check_opt_in ($pdo, $room, $user) {
-    $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ? AND user = ?');
-    $stmt->execute([$room, $user]);
-    $check = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ? AND user = ?');
+        $stmt->execute([$room, $user]);
+        $check = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($check) {
         return True;
     }
@@ -704,6 +892,13 @@ function check_opt_in ($pdo, $room, $user) {
     }
 }
 
+/**
+ * Opt-in a specific user to a specific room
+ * @param PDO $pdo Database
+ * @param int $room ID of the specific room
+ * @param int $user ID of the specific user
+ * @return string[]
+ */
 function opt_in ($pdo, $room, $user) {
     $room = (int) $room;
     $user = (int) $user;
@@ -735,9 +930,18 @@ function opt_in ($pdo, $room, $user) {
     }
 
     /* Opt-in user to room */
-    $stmt = $pdo->prepare('INSERT INTO opt_in (room, user) VALUES (?, ?)');
-    $stmt->execute([$room, $user]);
-    $inserted = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('INSERT INTO opt_in (room, user) VALUES (?, ?)');
+        $stmt->execute([$room, $user]);
+        $inserted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($inserted == 1) {
         return [
             'type' => 'success',
@@ -752,6 +956,13 @@ function opt_in ($pdo, $room, $user) {
     }
 }
 
+/**
+ * Opt-out a specific user of a specific room
+ * @param PDO $pdo Database
+ * @param int $room ID of the specific room
+ * @param int $user ID of the specific user
+ * @return string[]
+ */
 function opt_out ($pdo, $room, $user) {
     /* Check if all fields are set */
     if (
@@ -781,9 +992,18 @@ function opt_out ($pdo, $room, $user) {
     }
 
     /* Opt out user from room */
-    $stmt = $pdo->prepare('DELETE FROM opt_in WHERE room = ? AND user = ?');
-    $stmt->execute([$room, $user]);
-    $deleted = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('DELETE FROM opt_in WHERE room = ? AND user = ?');
+        $stmt->execute([$room, $user]);
+        $deleted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($deleted == 1) {
         return [
             'type' => 'success',
@@ -798,12 +1018,26 @@ function opt_out ($pdo, $room, $user) {
     }
 }
 
+/**
+ * Retrieve the information about all the rooms a specific user has opted in to
+ * @param PDO $pdo Database
+ * @param int $user ID of the specific user
+ * @return array Filled with info about the rooms the user has opted in to
+ */
 function tenant_opt_ins ($pdo, $user) {
-    $stmt = $pdo->prepare('SELECT id, owner, city, street_name, house_number, addition FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
-    $stmt->execute([$user]);
-    $rooms = $stmt->fetchAll();
-    $rooms_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT id, owner, city, street_name, house_number, addition FROM rooms JOIN opt_in ON rooms.id = opt_in.room WHERE opt_in.user = ?');
+        $stmt->execute([$user]);
+        $rooms = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $rooms_exp = Array();
     foreach ($rooms as $key => $value) {
         foreach ($value as $user_key => $user_input) {
             $rooms_exp[$key][$user_key] = htmlspecialchars($user_input);
@@ -812,6 +1046,12 @@ function tenant_opt_ins ($pdo, $user) {
     return $rooms_exp;
 }
 
+/**
+ * Create an HTML table for a specific user with all the rooms they have opted in to
+ * @param PDO $pdo Database
+ * @param int $user ID of the specific user
+ * @return string HTML table
+ */
 function tenant_opt_in_table ($pdo, $user) {
     $rooms = tenant_opt_ins($pdo, $user);
     $table_exp = '
@@ -842,6 +1082,40 @@ function tenant_opt_in_table ($pdo, $user) {
     return $table_exp;
 }
 
+/**
+ * Get info on all the users that have opted-in to a specific room
+ * @param PDO $pdo Database
+ * @param int $room ID of the specific room
+ * @return array|string
+ */
+function owner_opt_in_table ($pdo, $room) {
+    try {
+        $stmt = $pdo->prepare('SELECT users.id, users.first_name, users.last_name FROM users JOIN opt_in ON users.id = opt_in.user WHERE opt_in.room = ?');
+        $stmt->execute([$room]);
+        $users = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
+    $users_exp = Array();
+    foreach ($users as $key => $value) {
+        foreach ($value as $user_key => $user_input) {
+            $users_exp[$key][$user_key] = htmlspecialchars($user_input);
+        }
+    }
+
+    return get_users_table($users_exp);
+}
+
+/**
+ * Create a table of all users that have opted in to a specific room
+ * @param array $users Info on all users
+ * @return string HTML table
+ */
 function get_users_table ($users) {
     $table_exp = '
     <table class="table table-hover">
@@ -869,25 +1143,24 @@ function get_users_table ($users) {
     return $table_exp;
 }
 
-function owner_opt_in_table ($pdo, $room) {
-    $stmt = $pdo->prepare('SELECT users.id, users.first_name, users.last_name FROM users JOIN opt_in ON users.id = opt_in.user WHERE opt_in.room = ?');
-    $stmt->execute([$room]);
-    $users = $stmt->fetchAll();
-    $users_exp = Array();
-
-    foreach ($users as $key => $value) {
-        foreach ($value as $user_key => $user_input) {
-            $users_exp[$key][$user_key] = htmlspecialchars($user_input);
-        }
-    }
-
-    return get_users_table($users_exp);
-}
-
+/**
+ * Check if there are any users that have opted-in to a specific room
+ * @param PDO $pdo Database
+ * @param int $room ID of the specific room
+ * @return array|bool
+ */
 function check_room_interest ($pdo, $room) {
-    $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ?');
-    $stmt->execute([$room]);
-    $check = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM opt_in WHERE room = ?');
+        $stmt->execute([$room]);
+        $check = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
     if ($check) {
         return True;
     }
@@ -1210,8 +1483,8 @@ function send_message ($pdo, $message) {
 }
 
 function total_rooms ($pdo) {
-    $stmt = $pdo->prepare('SELECT id FROM rooms');
+    $stmt = $pdo->prepare('SELECT COUNT(id) AS amount FROM rooms');
     $stmt->execute([]);
-    $nr_rooms = $stmt->rowCount();
-    return $nr_rooms;
+    $nr_rooms = $stmt->fetch();
+    return $nr_rooms['amount'];
 }
