@@ -201,6 +201,7 @@ elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/register/', 'post')) {
     /* Register user */
     $feedback = register_user($db, $_POST);
+    $error_msg = get_error($feedback);
 
     /* Redirect to the correct page with an error or success message */
     if ($feedback['type'] == 'danger') {
@@ -273,6 +274,7 @@ elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/login/', 'post')) {
     /* Login user */
     $feedback = login_user($db, $_POST);
+    $error_msg = get_error($feedback);
 
     /* Redirect to the correct page with an error or a success message */
     if ($feedback['type'] == 'danger') {
@@ -289,6 +291,7 @@ elseif (new_route('/DDWT21/Final_Project/login/', 'post')) {
 elseif(new_route('/DDWT21/Final_Project/logout/', 'get')) {
     /* Log-out the user */
     $feedback = logout_user();
+    $error_msg = get_error($feedback);
 
     /* Redirect to the correct page with an error or a success message */
     redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
@@ -366,12 +369,15 @@ elseif (new_route('/DDWT21/Final_Project/view_rooms/', 'get')) {
 
     /* Page info */
     $page_title = 'View Rooms';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 6);
 
     /* Page content */
     $page_subtitle = 'The overview of all available rooms';
     $page_content = 'Here you can find all rooms available on Groningen-Net';
+
+    /* Display different content based on the role of the user */
     if (check_owner($db)) {
         $rooms = get_rooms_owner($db, $_SESSION['user_id']);
         if (empty($rooms)) {
@@ -419,6 +425,8 @@ elseif (new_route('/DDWT21/Final_Project/room/', 'get')) {
     $page_subtitle = 'View information about this specific room';
     $page_content = $room_info['general_info'];
 
+    /* HTML table is made in the single_room.php file */
+
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
         $error_msg = get_error($_GET['error_msg']);
@@ -451,6 +459,8 @@ elseif (new_route('/DDWT21/Final_Project/edit_room/', 'get')) {
     /* Page content */
     $page_subtitle = 'Edit ' . $room_info['street_name'] . ' ' . $room_info['house_number'] .  $room_info['addition'] . ', ' . $room_info['city'];
     $page_content = 'Edit the room below';
+
+    /* Submit button and form action for editing a room */
     $submit_button = 'Edit room';
     $form_action = '/DDWT21/Final_Project/edit_room/';
 
@@ -557,6 +567,7 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
+
     /* Check if the user is a tenant */
     if (check_owner($db)) {
         redirect('/DDWT21/Final_Project/view_rooms/');
@@ -564,6 +575,7 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
 
     /* Page info */
     $page_title = 'Opt-ins';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
 
@@ -571,12 +583,16 @@ elseif (new_route('/DDWT21/Final_Project/opt-ins/', 'get')) {
     $page_subtitle = 'The overview of all your opt-ins.';
     $page_content = 'Here you can find all the rooms that you have opted-in to.';
 
-    $rooms = get_rooms($db);
-    if (empty($rooms)) {
+    /* Get user id */
+    $user_id = $_SESSION['user_id'];
+
+    /* Check the opt-ins of a tenant */
+    $opt_ins = tenant_opt_ins($db, $user_id);
+    if (empty($opt_ins)) {
         $left_content = '<b>There are no rooms you have opted in to yet.</b>';
     }
     else {
-        $left_content = tenant_opt_in_table($db, $_SESSION['user_id']);
+        $left_content = tenant_opt_in_table($db, $user_id);
     }
 
     /* Check if an error message is set and display it if available */
@@ -594,11 +610,13 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
+
     /* Check if the user is an owner */
     if (!check_owner($db)) {
         redirect('/DDWT21/Final_Project/opt-ins/');
     }
 
+    /* Get room info */
     $room_id = $_GET['room_id'];
     $room_info = get_room_info($db, $room_id);
 
@@ -608,10 +626,12 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
         redirect(sprintf('/DDWT21/Final_Project/view_rooms/?error_msg=%s', json_encode($feedback)));
     }
 
+    /* Get address of the room */
     $address = room_address($db, $room_id);
 
     /* Page info */
     $page_title = 'Opt-ins for ' . $address['street_name'] . ' ' . $address['house_number'] . $address['addition'] . ', ' . $address['city'];
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 0);
 
@@ -619,6 +639,7 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
     $page_subtitle = 'The overview of all opt-ins for this room.';
     $page_content = 'Here you can see who has opted in to your room and you can check out their profile or send them a message.';
 
+    /* Check if anyone has opted-in to the room yet */
     if (check_room_interest($db, $room_id)) {
         $left_content = owner_opt_in_table($db, $room_id);
     }
@@ -646,13 +667,17 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
     $current_user = $_SESSION['user_id'];
     $user_profile = $_GET['user_id'];
 
+    /* Check if viewer is owner of the profile */
     if ($current_user != $user_profile) {
+        /* Check if viewer is a tenant */
         if (display_role($db, $current_user) == 'Tenant') {
+            /* If owner of the profile is a tenant deny access */
             if (display_role($db, $user_profile) == 'Tenant') {
                 $feedback = ['type' => 'danger', 'message' => 'You are not allowed to see the user profiles of other tenants.'];
                 redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
             }
             else {
+                /* Check if tenant has opted-in to a room of the owner */
                 $rooms = get_rooms_owner($db, $user_profile);
                 if (empty($rooms)) {
                     $feedback = ['type' => 'danger', 'message' => 'This owner does not offer any rooms and you cannot see their profile.'];
@@ -662,11 +687,13 @@ elseif (new_route('/DDWT21/Final_Project/view_profile/', 'get')) {
             }
         }
         else {
+            /* If owner of the profile is an owner deny access */
             if (display_role($db, $user_profile) == 'Owner') {
                 $feedback = ['type' => 'danger', 'message' => 'You are not allowed to see the user profiles of other owners.'];
                 redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
             }
             else {
+                /* if tenant has not opted-in to owner's room deny access */
                 if (!check_owner_tenant($db, $current_user, $user_profile)) {
                     $feedback = ['type' => 'danger', 'message' => 'This tenant has not opted in to one of your rooms and you cannot see their profile.'];
                     redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
@@ -730,6 +757,8 @@ elseif (new_route('/DDWT21/Final_Project/edit_profile/', 'get')) {
     /* Page content */
     $page_subtitle = $user_info['first_name'] . ' ' . $user_info['last_name'] . ', here you can edit your own profile';
     $page_content = 'Edit the profile below';
+
+    /* Submit button and form action for editing profile */
     $submit_button = 'Edit profile';
     $form_action = '/DDWT21/Final_Project/edit_profile/';
 
@@ -772,6 +801,7 @@ elseif (new_route('/DDWT21/Final_Project/remove_profile/', 'post')) {
     /* Get user id */
     $user_id = $_POST['user_id'];
 
+    /* If current user is not owner of the profile deny access */
     if ($_SESSION['user_id'] != $user_id) {
         $feedback = ['type' => 'danger', 'message' => 'You are not the owner of this profile.'];
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
@@ -806,12 +836,14 @@ elseif (new_route('/DDWT21/Final_Project/messages_overview/', 'get')) {
     /* Page content */
     $page_subtitle = 'The overview of all people you have messaged with';
     $page_content = 'Click on the \'View conversation\' button to see more';
-    $messages_overview = inbox($db, $_SESSION['user_id']);
 
+    /* Check if user has any conversations */
+    $messages_overview = inbox($db, $_SESSION['user_id']);
     if (empty($messages_overview)) {
         $left_content = '<b>You have not started any conversations yet</b>';
     }
     else {
+        /* Display HTML table with all users they have a conversation with */
         $left_content = messages_overview_table($messages_overview);
     }
 
@@ -830,20 +862,26 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
+    /* Get id's of users participating in the conversation */
     $user1 = $_GET['user1'];
     $user2 = $_GET['user2'];
+
+    /* If active user is not one of the participators deny access */
     $current_user = $_SESSION['user_id'];
     if ($current_user != $user1 AND $current_user != $user2) {
         $feedback = ['type' => 'danger', 'message' => 'You are not a participator in this conversation.'];
         redirect(sprintf('/DDWT21/Final_Project/messages_overview/?error_msg=%s', json_encode($feedback)));
     }
 
+    /* Check who is the inactive user */
     if ($_SESSION['user_id'] == $user1) {
         $inactive_user = $user2;
     }
     else {
         $inactive_user = $user1;
     }
+
+    /* Get info of the inactive user */
     $inactive_user_info = get_profile_info($db, $inactive_user);
 
     /* Page info */
@@ -852,6 +890,7 @@ elseif (new_route('/DDWT21/Final_Project/conversation/', 'get')) {
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 7);
 
+    /* Create chat panels and display them */
     $messages_table = conversation_table($db, $user1, $user2);
 
     /* Check if an error message is set and display it if available */
@@ -869,12 +908,15 @@ elseif (new_route('/DDWT21/Final_Project/send_message/', 'post')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
+    /* Send message */
     $feedback = send_message($db, $_POST);
     $error_msg = get_error($feedback);
 
+    /* Reload the page after the message was send */
     redirect(sprintf('/DDWT21/Final_Project/conversation/?error_msg=%s&user1=%s&user2=%s', json_encode($feedback), $_POST['sender'], $_POST['receiver']));
 }
 
+/* Page not found */
 else {
     http_response_code(404);
     echo '404 Not Found';
