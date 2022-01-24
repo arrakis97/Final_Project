@@ -252,7 +252,9 @@ function register_user($pdo, $form_data) {
  * @return bool
  */
 function check_login () {
-    session_start();
+    if (!isset($_SESSION)) {
+        session_start();
+    }
     if (isset($_SESSION['user_id'])) {
         return True;
     }
