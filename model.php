@@ -1161,6 +1161,7 @@ function check_room_interest ($pdo, $room) {
             'message' => sprintf('There was an error: %s', $e->getMessage())
         ];
     }
+
     if ($check) {
         return True;
     }
@@ -1171,15 +1172,24 @@ function check_room_interest ($pdo, $room) {
 
 /**
  * Check if a tenant has opted in to one of the owner's rooms
- * @param $pdo
- * @param $owner
- * @param $tenant
- * @return bool
+ * @param PDO $pdo Database
+ * @param int $owner ID of the owner
+ * @param int $tenant ID of the tenant
+ * @return array|bool
  */
 function check_owner_tenant ($pdo, $owner, $tenant) {
-    $stmt = $pdo->prepare('SELECT rooms.owner FROM rooms JOIN opt_in ON rooms.id = opt_in.room JOIN users ON opt_in.user = users.id WHERE users.id = ?');
-    $stmt->execute([$tenant]);
-    $owners = $stmt->fetchAll();
+    try {
+        $stmt = $pdo->prepare('SELECT rooms.owner FROM rooms JOIN opt_in ON rooms.id = opt_in.room JOIN users ON opt_in.user = users.id WHERE users.id = ?');
+        $stmt->execute([$tenant]);
+        $owners = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     foreach ($owners as $value) {
         if ($value['owner'] == $owner) {
             return True;
@@ -1188,18 +1198,38 @@ function check_owner_tenant ($pdo, $owner, $tenant) {
     return False;
 }
 
+/**
+ * Get all info of a specific user
+ * @param PDO $pdo Database
+ * @param int $user_id ID of the user
+ * @return array Array with all info on the user
+ */
 function get_profile_info ($pdo, $user_id) {
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
-    $stmt->execute([$user_id]);
-    $user_info = $stmt->fetch();
-    $user_info_exp = Array();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$user_id]);
+        $user_info = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
+    $user_info_exp = Array();
     foreach ($user_info as $key => $value) {
         $user_info_exp[$key] = htmlspecialchars($value);
     }
     return $user_info_exp;
 }
 
+/**
+ * Update a user's profile
+ * @param PDO $pdo Database
+ * @param array $user_info Array of user info
+ * @return string[]
+ */
 function update_profile($pdo, $user_info) {
     /* Check if all fields are set */
     if (
@@ -1220,15 +1250,32 @@ function update_profile($pdo, $user_info) {
         ];
     }
     /* Get current email */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
-    $stmt->execute([$user_info['user_id']]);
-    $users = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$user_info['user_id']]);
+        $users = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
     $current_email = $users['email'];
 
     /* Check if email is already in use */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-    $stmt->execute([$user_info['email']]);
-    $users = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$user_info['email']]);
+        $users = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($user_info['email'] == $users['email'] and $users['email'] != $current_email) {
         return [
             'type' => 'danger',
@@ -1237,15 +1284,32 @@ function update_profile($pdo, $user_info) {
     }
 
     /* Get current username */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
-    $stmt->execute([$user_info['user_id']]);
-    $users = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$user_info['user_id']]);
+        $users = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
     $current_username = $users['username'];
 
-    /* Check if email is already in use */
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
-    $stmt->execute([$user_info['username']]);
-    $users = $stmt->fetch();
+    /* Check if username is already in use */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$user_info['username']]);
+        $users = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($user_info['username'] == $users['username'] and $users['username'] != $current_username) {
         return [
             'type' => 'danger',
@@ -1254,22 +1318,31 @@ function update_profile($pdo, $user_info) {
     }
 
     /* Update profile */
-    $stmt = $pdo->prepare('UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ?, birthdate = ?, 
+    try {
+        $stmt = $pdo->prepare('UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ?, birthdate = ?, 
                  phone_number = ?, email = ?, language = ?, occupation = ?, biography = ? WHERE id = ?');
-    $stmt->execute([
-        $user_info['username'],
-        $user_info['password'],
-        $user_info['first_name'],
-        $user_info['last_name'],
-        $user_info['birthdate'],
-        $user_info['phone_number'],
-        $user_info['email'],
-        $user_info['language'],
-        $user_info['occupation'],
-        $user_info['biography'],
-        $user_info['user_id']
-    ]);
-    $updated = $stmt->rowCount();
+        $stmt->execute([
+            $user_info['username'],
+            $user_info['password'],
+            $user_info['first_name'],
+            $user_info['last_name'],
+            $user_info['birthdate'],
+            $user_info['phone_number'],
+            $user_info['email'],
+            $user_info['language'],
+            $user_info['occupation'],
+            $user_info['biography'],
+            $user_info['user_id']
+        ]);
+        $updated = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($updated == 1) {
         return [
             'type' => 'success',
@@ -1284,11 +1357,26 @@ function update_profile($pdo, $user_info) {
     }
 }
 
+/**
+ * Remove a user's profile
+ * @param PDO $pdo Database
+ * @param int $user_id ID of the user
+ * @return string[]
+ */
 function remove_profile ($pdo, $user_id) {
     /* Delete profile */
-    $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
-    $stmt->execute([$user_id]);
-    $deleted = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
+        $stmt->execute([$user_id]);
+        $deleted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     if ($deleted == 1) {
         logout_user();
         return [
@@ -1304,10 +1392,26 @@ function remove_profile ($pdo, $user_id) {
     }
 }
 
+/**
+ * Find all the users someone has a conversation with
+ * @param PDO $pdo Database
+ * @param int $user ID of the user
+ * @return array Array of users they have a conversation with
+ */
 function inbox ($pdo, $user) {
-    $stmt = $pdo->prepare('SELECT receiver AS id FROM messages WHERE sender = ? UNION SELECT sender AS id FROM messages WHERE receiver = ?');
-    $stmt->execute([$user, $user]);
-    $messagers = $stmt->fetchAll();
+    try {
+        $stmt = $pdo->prepare('SELECT receiver AS id FROM messages WHERE sender = ? UNION SELECT sender AS id FROM messages WHERE receiver = ?');
+        $stmt->execute([$user, $user]);
+        $messagers = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
+    /* Get info on all the users they have a conversation with */
     $names = Array();
     foreach ($messagers as $value) {
         $stmt = $pdo->prepare('SELECT id, first_name, last_name FROM users WHERE id = ?');
@@ -1324,6 +1428,11 @@ function inbox ($pdo, $user) {
     return $names;
 }
 
+/**
+ * Create a table of all users a specific users has conversations with
+ * @param array $users Array with the info on the users
+ * @return string HTML table
+ */
 function messages_overview_table ($users) {
     $table_exp = '
     <table class="table table-hover">
@@ -1349,25 +1458,55 @@ function messages_overview_table ($users) {
     return $table_exp;
 }
 
+/**
+ * Get all the messages between two users
+ * @param PDO $pdo Database
+ * @param int $user1 ID of the first user
+ * @param int $user2 ID of the second user
+ * @return array Array with all messages between two users, sorted by date
+ */
 function get_messages ($pdo, $user1, $user2) {
-    $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
-    $stmt->execute([$user1, $user2]);
-    $user1_sent = $stmt->fetchAll();
+    /* Get all messages send by the first user to the second user */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time');
+        $stmt->execute([$user1, $user2]);
+        $user1_sent = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     $user1_sent_exp = Array();
     foreach ($user1_sent as $key => $value) {
         foreach ($value as $user_key => $user_input) {
             $user1_sent_exp[$key][$user_key] = htmlspecialchars($user_input);
         }
     }
-    $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time ASC');
-    $stmt->execute([$user2, $user1]);
-    $user2_sent = $stmt->fetchAll();
+
+    /* Get all messages send by the second user to the first user */
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM messages WHERE sender = ? AND receiver = ? ORDER BY date_time');
+        $stmt->execute([$user2, $user1]);
+        $user2_sent = $stmt->fetchAll();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     $user2_sent_exp = Array();
     foreach ($user2_sent as $key => $value) {
         foreach ($value as $user_key => $user_input) {
             $user2_sent_exp[$key][$user_key] = htmlspecialchars($user_input);
         }
     }
+
+    /* Make arrays of the messages so we can merge them */
     $messages = Array();
     $i = 0;
     foreach ($user1_sent_exp as $message) {
@@ -1378,13 +1517,22 @@ function get_messages ($pdo, $user1, $user2) {
         $messages[$i] = $message;
         $i++;
     }
+    /* Sort the messages by date */
     usort($messages, function ($a, $b) {
         return $a['date_time'] > $b['date_time'];
     });
     return $messages;
 }
 
+/**
+ * Create the chat panels for a conversation between two users
+ * @param PDO $pdo Database
+ * @param int $user1 ID of the first user
+ * @param int $user2 ID of the second user
+ * @return string HTML table
+ */
 function conversation_table ($pdo, $user1, $user2) {
+    /* Check who of the two users is the active user */
     if ($_SESSION['user_id'] == $user1) {
         $active_user = $user1;
         $inactive_user = $user2;
@@ -1394,13 +1542,18 @@ function conversation_table ($pdo, $user1, $user2) {
         $inactive_user = $user1;
     }
     $inactive_user_name = display_user($pdo, $inactive_user);
+
+    /* Get all messages between the two users */
     $messages = get_messages($pdo, $user1, $user2);
     if (empty($messages)) {
         return '<b>You have not yet started a conversation with this person. Send a message to get started.</b>';
     }
+
+    /* Create chat */
     $messages_table = '';
     foreach ($messages as $message) {
         $date = strtotime($message['date_time']);
+        /* Messages by the active user appear on the right */
         if ($message['sender'] == $active_user) {
             $messages_table .= '
             <div class="chat-panel-right mb-4">
@@ -1421,6 +1574,7 @@ function conversation_table ($pdo, $user1, $user2) {
             </div>
             ';
         }
+        /* Messages by the inactive user appear on the left */
         else {
             $messages_table .= '
             <div class="chat-panel-left pb-4">
@@ -1446,6 +1600,12 @@ function conversation_table ($pdo, $user1, $user2) {
     return $messages_table;
 }
 
+/**
+ * Send a message to another user
+ * @param PDO $pdo Database
+ * @param array $message Contains the info about the message
+ * @return string[]
+ */
 function send_message ($pdo, $message) {
     /* Check if all fields are set */
     if (
@@ -1460,13 +1620,21 @@ function send_message ($pdo, $message) {
     }
 
     /* Save message to database */
-    $stmt = $pdo->prepare('INSERT INTO messages (sender, receiver, content) VALUES (?, ?, ?)');
-    $stmt->execute([
-        $message['sender'],
-        $message['receiver'],
-        $message['content']
-    ]);
-    $inserted = $stmt->rowCount();
+    try {
+        $stmt = $pdo->prepare('INSERT INTO messages (sender, receiver, content) VALUES (?, ?, ?)');
+        $stmt->execute([
+            $message['sender'],
+            $message['receiver'],
+            $message['content']
+        ]);
+        $inserted = $stmt->rowCount();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
 
     if ($inserted == 1) {
         return [
@@ -1482,9 +1650,23 @@ function send_message ($pdo, $message) {
     }
 }
 
+/**
+ * Count the total amount of rooms available
+ * @param PDO $pdo Database
+ * @return mixed Amount of rooms
+ */
 function total_rooms ($pdo) {
-    $stmt = $pdo->prepare('SELECT COUNT(id) AS amount FROM rooms');
-    $stmt->execute([]);
-    $nr_rooms = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare('SELECT COUNT(id) AS amount FROM rooms');
+        $stmt->execute([]);
+        $nr_rooms = $stmt->fetch();
+    }
+    catch (PDOException $e) {
+        return [
+            'type' => 'danger',
+            'message' => sprintf('There was an error: %s', $e->getMessage())
+        ];
+    }
+
     return $nr_rooms['amount'];
 }
