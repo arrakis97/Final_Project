@@ -57,7 +57,7 @@
                     <form action="/DDWT21/Final_Project/send_message/" method="POST">
                         <div class="flew-grow-0 py-3 px-4 border-top">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Type your message" name="content" required>
+                                <input type="text" class="form-control" placeholder="Type your message" name="content" style="border-radius: 15px" required>
                                 <input type="hidden" name="sender" value="<?php echo $current_user ?>">
                                 <input type="hidden" name="receiver" value="<?php echo $inactive_user ?>"
                                 <div class="button-container">

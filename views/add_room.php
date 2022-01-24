@@ -55,25 +55,25 @@
                     <label for="inputCity">
                         City
                     </label>
-                    <input type="text" class="form-control" id="inputCity" name="city" value="<?php if (isset($room_info)){echo $room_info['city'];} ?>" required>
+                    <input type="text" class="form-control" id="inputCity" placeholder="City" name="city" value="<?php if (isset($room_info)){echo $room_info['city'];} ?>" required>
                 </div>
                 <div class="col-md-4">
                     <label for="inputStreet">
                         Street name
                     </label>
-                    <input type="text" class="form-control" id="inputStreet" name="street_name" value="<?php if (isset($room_info)){echo $room_info['street_name'];} ?>" required>
+                    <input type="text" class="form-control" id="inputStreet" placeholder="Street name" name="street_name" value="<?php if (isset($room_info)){echo $room_info['street_name'];} ?>" required>
                 </div>
                 <div class="col-md-2">
                     <label for="inputNumber">
                         House number
                     </label>
-                    <input type="number" class="form-control" id="inputNumber" name="house_number" value="<?php if (isset($room_info)){echo $room_info['house_number'];} ?>" required>
+                    <input type="number" class="form-control" id="inputNumber" placeholder="House number" name="house_number" value="<?php if (isset($room_info)){echo $room_info['house_number'];} ?>" required>
                 </div>
                 <div class="col-md-2">
                     <label for="inputAddition">
                         Addition
                     </label>
-                    <input type="text" class="form-control" id="inputAddition" name="addition" value="<?php if (isset($room_info)){echo $room_info['addition'];} ?>">
+                    <input type="text" class="form-control" id="inputAddition" placeholder="Addition" name="addition" value="<?php if (isset($room_info)){echo $room_info['addition'];} ?>">
                 </div>
                 <div class="col-md-3 py-3">
                     <div class="form-floating">
