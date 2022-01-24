@@ -87,7 +87,7 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
     }
 
     /* Choose template */
-    include use_template('main');
+    include use_template('home_text');
 }
 
 /* Register GET */
@@ -141,8 +141,12 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     $navigation = get_navigation($navigation_array, 4);
 
     /* Page content */
-    $page_subtitle = 'Your account';
-    $page_content = 'Here you can see information about your account';
+    if (check_owner($db)) {
+        $page_content = 'This is the homepage of your account. From here you can logout, edit your profile and check your opt-ins.';
+    }
+    else {
+        $page_content = 'This is the homepage of your account. From here you can logout, edit your profile and add a room.';
+    }
     $user = display_user($db, $user_id)['first_name'];
 
     /* Check if an error message is set and display it if available */
@@ -513,8 +517,8 @@ elseif (new_route('/DDWT21/Final_Project/room_opt-ins/', 'get')) {
     $navigation = get_navigation($navigation_array, 0);
 
     /* Page content */
-    $page_subtitle = 'The overview of all your opt-ins.';
-    $page_content = 'Here you can find all opt-ins for this specific room.';
+    $page_subtitle = 'The overview of all opt-ins for this room.';
+    $page_content = 'Here you can see who has opted in to your room and you can check out their profile or send them a message.';
 
     if (check_room_interest($db, $room_id)) {
         $left_content = owner_opt_in_table($db, $room_id);
