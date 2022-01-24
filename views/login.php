@@ -14,7 +14,9 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
@@ -48,9 +50,7 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
             </form>
-
         </div>
-
     </div>
 </div>
 

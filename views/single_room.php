@@ -14,14 +14,15 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
 <!-- Content -->
 <div class="container-fluid">
     <div class="pd-15">&nbsp;</div>
-
     <div class="row">
 
         <!-- Left column -->
@@ -146,7 +147,6 @@
         </div>
     </div>
 </div>
-
 <div class="pd-15">&nbsp;</div>
 
 <!-- Optional JavaScript -->

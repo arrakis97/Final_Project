@@ -23,14 +23,15 @@
     </style>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
 <!-- Content -->
 <div class="container">
     <div class="pd-15">&nbsp;</div>
-
     <div class="container">
         <h1><?= $page_title ?></h1>
         <!-- Error message -->
@@ -47,13 +48,13 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- Display messages -->
                     <div class="position-relative">
                         <div class="chat-messages chat-field p-4">
                             <?php echo $messages_table; ?>
                         </div>
                     </div>
-
+                    <!-- Send message -->
                     <form action="/DDWT21/Final_Project/send_message/" method="POST">
                         <div class="flew-grow-0 py-3 px-4 border-top">
                             <div class="input-group">

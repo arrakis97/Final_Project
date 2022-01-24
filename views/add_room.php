@@ -13,6 +13,7 @@
 
     <title><?= $page_title ?></title>
 
+    <!-- This removes the up and down arrows -->
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -30,14 +31,15 @@
     </style>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
 <!-- Content -->
 <div class="container">
     <div class="pd-15">&nbsp;</div>
-
     <div class="row">
 
         <!-- Left column -->
@@ -47,9 +49,9 @@
 
             <h1><?= $page_title?></h1>
             <h5><?= $page_subtitle ?></h5>
-
             <div class="pd-15"> </div>
 
+            <!-- Add/Edit room form -->
             <form action="<?= $form_action ?>" method="POST" class="row g-5">
                 <div class="col-md-4">
                     <label for="inputCity">
@@ -196,7 +198,6 @@
                         </option>
                     </select>
                 </div>
-
                 <div class="col-md-12 py-3">
                     <label for="inputInfo">
                         General information
@@ -213,7 +214,6 @@
                     </div>
                 <?php } ?>
             </form>
-
         </div>
     </div>
 </div>

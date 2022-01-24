@@ -14,14 +14,15 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
 <!-- Content -->
 <div class="container">
     <div class="pd-15">&nbsp;</div>
-
     <div class="row">
 
         <!-- Left column -->
@@ -34,7 +35,6 @@
             <p><?= $page_content ?></p>
             <?php if(isset($left_content)){echo $left_content;} ?>
         </div>
-
     </div>
 </div>
 

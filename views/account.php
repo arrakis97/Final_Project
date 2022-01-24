@@ -14,7 +14,9 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
+<!-- Header picture -->
 <?= $header_picture ?>
+
 <!-- Menu -->
 <?= $navigation ?>
 
@@ -32,11 +34,10 @@
             <p><?= $page_content ?></p>
         </div>
     </div>
-
     <div class="pd-15">&nbsp;</div>
 
+    <!-- Display cards on my account page -->
     <div class="row">
-
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
@@ -88,7 +89,6 @@
                 </div>
             </div>
         <?php } ?>
-
     </div>
 </div>
 
