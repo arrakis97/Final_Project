@@ -70,6 +70,8 @@ $navigation_array = Array (
     )
 );
 
+$header_picture = '<img src="/DDWT21/Final_Project/views/pictures/skyline.jpg" style="width: 100%">';
+
 /* Home page */
 if (new_route('/DDWT21/Final_Project/', 'get')) {
     /* Page info */
@@ -79,7 +81,6 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
 
     /* Page content */
     $page_subtitle = 'The online platform for connecting owners and tenants';
-    $page_content = 'Groningen-Net';
 
     /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {

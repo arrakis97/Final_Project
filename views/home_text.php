@@ -14,7 +14,7 @@
     <title><?= $page_title ?></title>
 </head>
 <body>
-<img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
+<?= $header_picture ?>
 <!-- Menu -->
 <?= $navigation ?>
 
@@ -31,10 +31,11 @@
 
             <h1><?= $page_title ?></h1>
             <h5><?= $page_subtitle ?></h5>
-            <p><?= $page_content ?></p>
-            <?php if(isset($left_content)){echo $left_content;} ?>
-        </div>
+            <p>
+                Everyone knows it: there is a shortage of rooms everywhere, but this hits especially hard in cities with lots of students, like Groningen.
+            </p>
 
+        </div>
     </div>
 </div>
 

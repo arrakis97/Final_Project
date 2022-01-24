@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-<img src="/DDWT21/Final_Project/views/skyline.jpg" style="width: 100%">
+<?= $header_picture ?>
 <!-- Menu -->
 <?= $navigation ?>
 
