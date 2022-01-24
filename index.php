@@ -5,7 +5,7 @@
  * Database-driven Webtechnology Final Project
  * Heine Jan Lindemulder
  * Based on code from the assignments by Stijn Eikelboom
- * The SVG icons were taken from the Bootstrap icons site
+ * The SVG icons were taken from the Bootstrap icons site at https://icons.getbootstrap.com
  */
 
 /* Include model.php */
@@ -148,8 +148,10 @@ else {
     }
 }
 
-$header_picture = '<img src="/DDWT21/Final_Project/views/pictures/skyline.jpg" style="width: 100%">';
+/* Header picture */
+$header_picture = '<img src="/DDWT21/Final_Project/views/pictures/skyline.jpg" alt="No image" style="width: 100%">';
 
+/* Count the amount of available rooms */
 $nr_rooms = total_rooms($db);
 
 /* Home page */
@@ -175,14 +177,18 @@ if (new_route('/DDWT21/Final_Project/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/register/', 'get')) {
     /* Page info */
     $page_title = 'Register';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 2);
 
     /* Page content */
     $page_content = 'Here you can register for Groningen-Net';
     $submit_button = 'Register now';
+
+    /* Form action for the registration form */
     $form_action = '/DDWT21/Final_Project/register/';
 
+    /* Check if an error message is set and display it if available */
     if (isset($_GET['error_msg'])) {
         $error_msg = get_error($_GET['error_msg']);
     }
@@ -214,10 +220,12 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
         redirect('/DDWT21/Final_Project/login/');
     }
 
+    /* Get the id of the currently active user */
     $user_id = $_SESSION['user_id'];
 
     /* Page info */
     $page_title = 'My Account';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 4);
 
@@ -228,6 +236,8 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
     else {
         $page_content = 'This is the homepage of your account. From here you can logout, edit your profile and add a room.';
     }
+
+    /* Get the name of the user */
     $user = display_user($db, $user_id)['first_name'];
 
     /* Check if an error message is set and display it if available */
@@ -243,6 +253,7 @@ elseif (new_route('/DDWT21/Final_Project/my_account/', 'get')) {
 elseif (new_route('/DDWT21/Final_Project/login/', 'get')) {
     /* Page info */
     $page_title = 'Login';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 3);
 
@@ -276,7 +287,10 @@ elseif (new_route('/DDWT21/Final_Project/login/', 'post')) {
 
 /* Logout GET */
 elseif(new_route('/DDWT21/Final_Project/logout/', 'get')) {
+    /* Log-out the user */
     $feedback = logout_user();
+
+    /* Redirect to the correct page with an error or a success message */
     redirect(sprintf('/DDWT21/Final_Project/?error_msg=%s', json_encode($feedback)));
 }
 
@@ -286,6 +300,7 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
     if (!check_login()) {
         redirect('/DDWT21/Final_Project/login/');
     }
+
     /* Check if user is owner */
     $feedback = check_owner($db);
     if (!$feedback) {
@@ -294,16 +309,20 @@ elseif (new_route('/DDWT21/Final_Project/add_room/', 'get')) {
         redirect(sprintf('/DDWT21/Final_Project/my_account/?error_msg=%s', json_encode($feedback)));
     }
 
+    /* If the currently active user is an owner they are allowed to add a room */
     $display_buttons = True;
 
     /* Page info */
     $page_title = 'Add Room';
+
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 5);
 
     /* Page content */
     $page_subtitle = 'Here you can add a room';
     $submit_button = 'Add your room';
+
+    /* Form action for adding a room */
     $form_action = '/DDWT21/Final_Project/add_room/';
 
     /* Check if an error message is set and display it if available */
