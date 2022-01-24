@@ -72,10 +72,12 @@ $navigation_array = Array (
 
 $header_picture = '<img src="/DDWT21/Final_Project/views/pictures/skyline.jpg" style="width: 100%">';
 
+$nr_rooms = total_rooms($db);
+
 /* Home page */
 if (new_route('/DDWT21/Final_Project/', 'get')) {
     /* Page info */
-    $page_title = 'Home';
+    $page_title = 'Groningen-Net';
     /* Check which page is the active page */
     $navigation = get_navigation($navigation_array, 1);
 

@@ -1211,3 +1211,10 @@ function send_message($pdo, $message) {
         ];
     }
 }
+
+function total_rooms($pdo) {
+    $stmt = $pdo->prepare('SELECT id FROM rooms');
+    $stmt->execute([]);
+    $nr_rooms = $stmt->rowCount();
+    return $nr_rooms;
+}
