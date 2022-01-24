@@ -39,7 +39,8 @@
                     Everyone knows it: there is a shortage of rooms everywhere, but this hits especially hard in cities with lots of students, like Groningen.
                     Often, students don't have much to spend and have only the bus and their bike as a means of transportation. This means that many students don't have the
                     luxury of living outside of Groningen. Furthermore, UKrant (a newspaper from students and staff of the UG) reported that the university grew with 9.8%
-                    in 2020 and 3.1% in 2021 (<a href="https://ukrant.nl/gevreesde-monstergroei-blijft-uit-38-290-studenten-op-de-rug/">source</a>). The housing shortage combined with this growth of the university means that there is just enough room for everybody.
+                    in 2020 and 3.1% in 2021 (<a href="https://ukrant.nl/gevreesde-monstergroei-blijft-uit-38-290-studenten-op-de-rug/" target="_blank" rel="noopener noreferrer">source</a>).
+                    The housing shortage combined with this growth of the university means that there is just enough room for everybody.
                     Some students have even been forced to live in emergency housing, which you can see here on the right.
                 </p>
             </div>
