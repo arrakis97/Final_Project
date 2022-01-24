@@ -17,17 +17,17 @@
     overflow-y: auto
 }
 
-.chat-message-left,
-.chat-message-right {
+.chat-panel-left,
+.chat-panel-right {
     display: flex;
     flex-shrink: 0
 }
 
-.chat-message-left {
+.chat-panel-left {
     margin-right: auto
 }
 
-.chat-message-right {
+.chat-panel-right {
     flex-direction: row-reverse;
     margin-left: auto
 }

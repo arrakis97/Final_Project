@@ -1133,7 +1133,7 @@ function conversation_table ($pdo, $user1, $user2) {
         $date = strtotime($message['date_time']);
         if ($message['sender'] == $active_user) {
             $messages_table .= '
-            <div class="chat-message-right mb-4">
+            <div class="chat-panel-right mb-4">
                 <div>
                     <div class="text-muted small text-nowrap pr-1">
                         '.date('d/m/Y', $date).'
@@ -1153,7 +1153,7 @@ function conversation_table ($pdo, $user1, $user2) {
         }
         else {
             $messages_table .= '
-            <div class="chat-message-left pb-4">
+            <div class="chat-panel-left pb-4">
                 <div>
                     <div class="text-muted small text-nowrap pr-3">
                         '.date('d/m/Y', $date).'
