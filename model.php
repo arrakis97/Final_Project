@@ -1173,7 +1173,7 @@ function conversation_table ($pdo, $user1, $user2) {
     return $messages_table;
 }
 
-function send_message($pdo, $message) {
+function send_message ($pdo, $message) {
     /* Check if all fields are set */
     if (
         empty($message['content']) or
@@ -1209,7 +1209,7 @@ function send_message($pdo, $message) {
     }
 }
 
-function total_rooms($pdo) {
+function total_rooms ($pdo) {
     $stmt = $pdo->prepare('SELECT id FROM rooms');
     $stmt->execute([]);
     $nr_rooms = $stmt->rowCount();
