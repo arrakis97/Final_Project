@@ -1032,16 +1032,11 @@ function remove_profile ($pdo, $user_id) {
 }
 
 function inbox ($pdo, $user) {
-    $stmt = $pdo->prepare('SELECT DISTINCT users.id FROM users JOIN messages ON users.id = messages.receiver WHERE messages.sender = ?');
-    $stmt->execute([$user]);
-    $receivers = $stmt->fetchAll();
-    $stmt = $pdo->prepare('SELECT DISTINCT users.id FROM users JOIN messages ON users.id = messages.sender WHERE messages.receiver = ?');
-    $stmt->execute([$user]);
-    $senders = $stmt->fetchAll();
-    $merge = array_merge($receivers, $senders);
-    $unique = array_unique($merge, SORT_REGULAR);
+    $stmt = $pdo->prepare('SELECT receiver AS id FROM messages WHERE sender = ? UNION SELECT sender AS id FROM messages WHERE receiver = ?');
+    $stmt->execute([$user, $user]);
+    $messagers = $stmt->fetchAll();
     $names = Array();
-    foreach ($unique as $value) {
+    foreach ($messagers as $value) {
         $stmt = $pdo->prepare('SELECT id, first_name, last_name FROM users WHERE id = ?');
         $stmt->execute([$value['id']]);
         $name = $stmt->fetchAll();
